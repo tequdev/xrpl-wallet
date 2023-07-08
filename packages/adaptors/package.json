@@ -1,0 +1,32 @@
+{
+  "name": "@xrpl-wallet/adaptors",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.1.1",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
+  },
+  "tsup": {
+    "entry": [
+      "index.ts"
+    ],
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "dts": true
+  },
+  "dependencies": {
+    "xrpl": "^2.7.0"
+  }
+}

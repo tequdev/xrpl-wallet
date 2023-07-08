@@ -1,0 +1,13 @@
+{
+  "name": "xrpl-wallet",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^6.6.2"
+  }
+}
