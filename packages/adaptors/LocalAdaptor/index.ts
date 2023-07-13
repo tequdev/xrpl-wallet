@@ -30,7 +30,7 @@ export class LocalAdaptor extends WalletAdaptor {
     }
     this.client = new Client(this.server)
   }
-  connect = async () => {
+  signIn = async () => {
     await this.client.connect()
     return this.client.isConnected()
   }

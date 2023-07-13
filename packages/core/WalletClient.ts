@@ -2,8 +2,8 @@ import { SignAndSubmitOption, TxJson, WalletAdaptor } from "./WalletAdaptor"
 
 export class WalletClient<T extends WalletAdaptor> {
   constructor(private readonly adaptor: T) { }
-  connect() {
-    return this.adaptor.connect()
+  signIn() {
+    return this.adaptor.signIn()
   }
   getAddress() {
     return this.adaptor.getAddress()

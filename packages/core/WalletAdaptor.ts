@@ -7,7 +7,7 @@ export type SignAndSubmitOption = {
 }
 
 interface IWalletAdaptor {
-  connect: () => Promise<boolean>
+  signIn: () => Promise<boolean>
   getAddress: () => Promise<string | null>
   getNetwork: () => Promise<{ network: NETWORK, server: string } | null>
   sign: (txjson: TxJson) => Promise<{ tx_blob: string; hash: string } | null>
@@ -16,7 +16,7 @@ interface IWalletAdaptor {
 }
 
 export abstract class WalletAdaptor implements IWalletAdaptor {
-  abstract connect: () => Promise<boolean>
+  abstract signIn: () => Promise<boolean>
   abstract getAddress: () => Promise<string | null>
   abstract getNetwork: () => Promise<{ network: string; server: string } | null>
   abstract sign: (txjson: TxJson) => Promise<{ tx_blob: string; hash: string } | null>
