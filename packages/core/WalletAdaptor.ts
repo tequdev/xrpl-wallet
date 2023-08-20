@@ -15,6 +15,7 @@ export type SignOption = {
 
 interface IWalletAdaptor {
   name: string
+  isConnected: () => Promise<boolean>
   signIn: () => Promise<boolean>
   getAddress: () => Promise<string | null>
   getNetwork: () => Promise<Network | null>
@@ -24,6 +25,7 @@ interface IWalletAdaptor {
 
 export abstract class WalletAdaptor implements IWalletAdaptor {
   abstract name: string
+  abstract isConnected: () => Promise<boolean>
   abstract signIn: () => Promise<boolean>
   abstract getAddress: () => Promise<string | null>
   abstract getNetwork: () => Promise<Network | null>

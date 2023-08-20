@@ -1,4 +1,4 @@
-import { SignOption, TxJson, WalletAdaptor } from '@xrplclient/core'
+import { SignOption, TxJson, WalletAdaptor } from '@xrpl-wallet/core'
 import { Wallet, validate } from 'xrpl'
 
 type LocalAdaptorProps = {
@@ -11,6 +11,9 @@ export class LocalAdaptor extends WalletAdaptor {
   constructor({ seed }: LocalAdaptorProps) {
     super()
     this.wallet = Wallet.fromSeed(seed)
+  }
+  isConnected = async () => {
+    return true
   }
   signIn = async () => {
     return true

@@ -7,8 +7,8 @@
     "strict": true,
     "skipLibCheck": true,
     "paths": {
-      "@xrpl-wallet/core": ["../packages/core"],
-      "@xrpl-wallet/adaptors": ["../packages/adaptors"]
+      "@xrpl-wallet/core": ["../../packages/core"],
+      "@xrpl-wallet/adaptors": ["../../packages/adaptors"]
     }
   }
 }

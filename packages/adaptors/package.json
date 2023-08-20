@@ -6,19 +6,23 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.1.1",
+    "@xrpl-wallet/core": "workspace:*",
     "tsup": "^6.7.0",
     "typescript": "^5.0.2"
   },
   "tsup": {
     "entry": [
-      "index.ts"
+      "index.ts",
+      "LocalAdaptor/index.ts",
+      "XummAdaptor/index.ts",
+      "CrossmarkAdaptor/index.ts"
     ],
     "format": [
       "cjs",
@@ -28,6 +32,7 @@
   },
   "dependencies": {
     "@crossmarkio/sdk": "0.2.2-beta",
-    "xrpl": "^2.7.0"
+    "xrpl": "^2.7.0",
+    "xumm": "^1.5.5"
   }
 }

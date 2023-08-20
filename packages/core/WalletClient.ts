@@ -13,6 +13,10 @@ export class WalletClient<T extends WalletAdaptor> {
     this.network = network
     this.changeNetwork(network)
   }
+  
+  async isConnected() {
+    return await this.adaptor.isConnected()
+  }
 
   /**
    * Connect to Wallet
@@ -103,7 +107,9 @@ export class WalletClient<T extends WalletAdaptor> {
   }
   
   async getAccountSequence() {
+    console.log(await this.getAddress())
     const result = await this.xrplClient.send({ command: 'account_info', account: await this.getAddress() })
+    console.log(result)
     return result.account_data.Sequence as number
   }
   
