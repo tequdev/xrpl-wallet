@@ -1,18 +1,21 @@
 import { WalletClient } from '@xrpl-wallet/core'
-import { LocalAdaptor } from '@xrpl-wallet/adapters'
+import { LocalAdaptor } from '@xrpl-wallet/adaptors'
 
-const adaptor = new LocalAdaptor({ seed: 'sEd7eh36RfjZMxfN6zJ72wT9bCF3FCV', network: 'testnet' })
-const walletClient = new WalletClient(adaptor)
+const adaptor = new LocalAdaptor({ seed: 'sEd7eh36RfjZMxfN6zJ72wT9bCF3FCV' })
+const walletClient = new WalletClient(adaptor, { server: 'testnet' })
 
 const main = async () => {
   await walletClient.signIn()
   console.log(await walletClient.getAddress())
   console.log(await walletClient.getNetwork())
-  const result = await walletClient.signAndSubmit({
+
+  const tx = await walletClient.autofill({
     TransactionType: 'AccountSet',
-    Account: await walletClient.getAddress()
   })
-  console.log(result?.hash)
+  const result = await walletClient.sign(tx)
+  console.log(result)
+  const submitResult = await walletClient.submit(result!.tx_blob)
+  console.log(submitResult)
 }
 
 main()

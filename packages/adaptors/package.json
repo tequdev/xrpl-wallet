@@ -27,6 +27,7 @@
     "dts": true
   },
   "dependencies": {
+    "@crossmarkio/sdk": "0.2.2-beta",
     "xrpl": "^2.7.0"
   }
 }

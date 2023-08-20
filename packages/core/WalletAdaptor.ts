@@ -1,25 +1,32 @@
-export type NETWORK = 'mainnet' | 'testnet' | 'devnet' | string
+export type NETWORK_TYPE = 'mainnet' | 'testnet' | 'devnet'
+
+export type Network = {
+  server: NETWORK_TYPE | string | string[];
+}
 
 export type TxJson = Record<string, any>
 
-export type SignAndSubmitOption = {
-  autofill?: boolean
+type SubmitResponse = { tx_blob: string; hash: string }
+type SubmitWaitResponse = { tx_json: TxJson }
+
+export type SignOption = {
+  autofill?: boolean // default: trued
 }
 
 interface IWalletAdaptor {
+  name: string
   signIn: () => Promise<boolean>
   getAddress: () => Promise<string | null>
-  getNetwork: () => Promise<{ network: NETWORK, server: string } | null>
-  sign: (txjson: TxJson) => Promise<{ tx_blob: string; hash: string } | null>
-  signAndSubmit: (txjson: TxJson, option?: SignAndSubmitOption) => Promise<{ hash: string } | null>
-  submit: (txblob: string) => Promise<{ hash: string } | null>
+  getNetwork: () => Promise<Network | null>
+  sign: (txjson: TxJson, option?: SignOption) => Promise<SubmitResponse | null>
+  signAndSubmit: (txjson: TxJson, option?: SignOption) => Promise<SubmitWaitResponse | null>
 }
 
 export abstract class WalletAdaptor implements IWalletAdaptor {
+  abstract name: string
   abstract signIn: () => Promise<boolean>
   abstract getAddress: () => Promise<string | null>
-  abstract getNetwork: () => Promise<{ network: string; server: string } | null>
-  abstract sign: (txjson: TxJson) => Promise<{ tx_blob: string; hash: string } | null>
-  abstract signAndSubmit: (txjson: TxJson, option?: SignAndSubmitOption) => Promise<{ hash: string } | null>
-  abstract submit: (txblob: string) => Promise<{ hash: string } | null>
+  abstract getNetwork: () => Promise<Network | null>
+  abstract sign: (txjson: TxJson, option?: SignOption) => Promise<SubmitResponse | null>
+  abstract signAndSubmit: (txjson: TxJson, option?: SignOption) => Promise<SubmitWaitResponse | null>
 }

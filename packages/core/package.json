@@ -25,5 +25,8 @@
       "esm"
     ],
     "dts": true
+  },
+  "dependencies": {
+    "xrpl-client": "2.1.1"
   }
 }
