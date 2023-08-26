@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["./*"],
       "@xrpl-wallet/core": ["../../packages/core/dist"],
-      "@xrpl-wallet/adaptors": ["../../packages/adaptors/dist"]
+      "@xrpl-wallet/adaptors": ["../../packages/adaptors/dist"],
+      "@xrpl-wallet/react": ["../../packages/react/dist"]
 
     }
   },

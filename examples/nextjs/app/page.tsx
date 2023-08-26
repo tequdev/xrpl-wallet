@@ -1,47 +1,33 @@
 'use client'
 import Image from 'next/image'
-import { WalletAdaptor, WalletClient } from '@xrpl-wallet/core'
 import { XummAdaptor, CrossmarkAdaptor } from '@xrpl-wallet/adaptors'
-import { useEffect, useState } from 'react'
-
+import { useAccount, useTransaction, useWalletClient } from '@xrpl-wallet/react'
 
 export default function Home() {
-  const [walletClient, setWalletClient] = useState<WalletClient<WalletAdaptor>>()
-  const [address, setAddress] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (walletClient === undefined) return
-    walletClient.onAccountChange((address) => setAddress(address))
-    walletClient.onConnected(async () => {
-      setAddress(await walletClient.getAddress())
-    })
-    walletClient.onDisconnected(() => {
-      console.log('disconnected')
-      setAddress(null)
-    })
-  }, [walletClient])
+  const { selectWallet, signIn: signInWallet, signOut: signOutWallet, walletName, walletConnected } = useWalletClient()
+  const address = useAccount()
+  const txn = useTransaction()
 
   const select = (adaptor: 'xumm' | 'crossmark') => {
+    console.log('connecting to', adaptor)
     if (adaptor === 'xumm') {
-      const xumm = new XummAdaptor({ apiKey: 'api-key', apiSecret: "api-secret" })
-      setWalletClient(new WalletClient(xumm))
+      const xumm = new XummAdaptor({ apiKey: 'api-key'})
+      selectWallet(xumm)
     } else {
       const crossmark = new CrossmarkAdaptor()
-      setWalletClient(new WalletClient(crossmark))
+      selectWallet(crossmark)
     }
   }
+
   const signIn = async () => {
-    if (walletClient === undefined) return
-    await walletClient.signIn()
+    await signInWallet!()
   }
   const signOut = async () => {
-    if (walletClient === undefined) return
-    await walletClient.signOut()
+    await signOutWallet!()
   }
   const sendTx = async () => {
-    if (walletClient === undefined) return
-    const tx = await walletClient.autofill({ TransactionType: 'AccountSet' })
-    const result = await walletClient.signAndSubmit(tx)
+    const tx = await txn!.autofill({ TransactionType: 'AccountSet' })
+    const result = await txn!.signAndSubmit(tx)
     alert(JSON.stringify(result, null, '  '))
   }
   return (
@@ -56,19 +42,19 @@ export default function Home() {
           priority
         />
       </div>
-      {!walletClient &&
+      {!walletConnected &&
         <div className='flex space-x-2'>
           <button className='btn btn-outline btn-primary' onClick={() => select('xumm')}>Xumm</button>
           <button className='btn btn-outline btn-primary' onClick={() => select('crossmark')}>Crossmark</button>
         </div>
       }
-      {walletClient &&
+      {walletConnected &&
         <>
           <div className='flex space-x-2 mb-8'>
             {address ?
               <button className='btn btn-outline btn-primary' onClick={signOut}>SignOut</button>
               :
-              <button className='btn btn-primary' onClick={signIn}>Connect to {walletClient.walletName}</button>
+              <button className='btn btn-primary' onClick={signIn}>Connect to {walletName}</button>
             }
           </div>
           {address &&
