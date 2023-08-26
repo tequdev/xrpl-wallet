@@ -34,5 +34,8 @@
     "@crossmarkio/sdk": "0.2.5-beta",
     "xrpl": "^2.7.0",
     "xumm": "^1.5.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
