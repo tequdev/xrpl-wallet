@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { XummAdaptor, CrossmarkAdaptor } from '@xrpl-wallet/adaptors'
+import { XummAdaptor, CrossmarkAdaptor, WalletConnectAdaptor } from '@xrpl-wallet/adaptors'
 import { useAccount, useTransaction, useWalletClient } from '@xrpl-wallet/react'
 
 export default function Home() {
@@ -8,14 +8,27 @@ export default function Home() {
   const address = useAccount()
   const txn = useTransaction()
 
-  const select = (adaptor: 'xumm' | 'crossmark') => {
+  const select = (adaptor: 'xumm' | 'crossmark' | 'walletconnect') => {
     console.log('connecting to', adaptor)
     if (adaptor === 'xumm') {
       const xumm = new XummAdaptor({ apiKey: '7fcb00b9-b846-4ddf-ae02-2a94f18c0b2f' })
       selectWallet(xumm)
-    } else {
+    } else if (adaptor === 'crossmark') {
       const crossmark = new CrossmarkAdaptor()
       selectWallet(crossmark)
+    } else {
+      const walletconnect = new WalletConnectAdaptor({
+        metadata: {
+          name: "XRPL WalletConnect Demo",
+          description: "XRPL WalletConnect Demo",
+          url: "",
+          icons: [],
+        },
+        projectId: '85ad846d8aa771cd56c2bbbf30f7a183',
+        network: 'testnet',
+        relayUrl: 'wss://relay.walletconnect.org',
+      })
+      selectWallet(walletconnect)
     }
   }
 
@@ -26,7 +39,7 @@ export default function Home() {
     await signOutWallet!()
   }
   const sendTx = async () => {
-    const tx = await txn!.autofill({ TransactionType: 'AccountSet' })
+    const tx = await txn!.autofill({ TransactionType: 'Payment', Destination: 'rQQQrUdN1cLdNmxH4dHfKgmX5P4kf3ZrM', Amount: '100' })
     const result = await txn!.signAndSubmit(tx)
     alert(JSON.stringify(result, null, '  '))
   }
@@ -46,6 +59,7 @@ export default function Home() {
         <div className='flex space-x-2'>
           <button className='btn btn-outline btn-primary' onClick={() => select('xumm')}>Xumm</button>
           <button className='btn btn-outline btn-primary' onClick={() => select('crossmark')}>Crossmark</button>
+          <button className='btn btn-outline btn-primary' onClick={() => select('walletconnect')}>WalletConnect</button>
         </div>
       }
       {walletConnected &&

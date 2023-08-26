@@ -12,6 +12,9 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     this.walletName = adaptor.name
     this.network = network
     this.changeNetwork(network)
+    this.adaptor.on(EVENTS.NETWORK_CHANGED, (network: Network) => {
+      this.changeNetwork(network)
+    })
   }
 
   // events
