@@ -137,10 +137,10 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
       txjson.Sequence = await this.getAccountSequence()
     }
     if(!txjson.LastLedgerSequence) {
-      txjson.LastLedgerSequence = await this.getLedgerSequece()
+      txjson.LastLedgerSequence = this.getLedgerSequece()
     }
     if(!txjson.Fee) {
-      txjson.Fee = await this.getFee()
+      txjson.Fee = this.getFee()
     }
     // TODO: NetworkID
     return txjson
@@ -151,14 +151,14 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     return result.account_data.Sequence as number
   }
   
-  getLedgerSequece = async (offset: number = 20) => {
-    const result = await this.xrplClient.send({ command: 'ledger', ledger_index: 'validated' })
-    return (result.ledger_index as number) + offset
+  getLedgerSequece = (offset: number = 20) => {
+    const { ledger: { last: ledger_index } } = this.xrplClient.getState()
+    return (ledger_index as number) + offset
   }
   
-  getFee = async () => {
-    const result = await this.xrplClient.send({ command: 'fee' })
-    return result.drops.base_fee as string
+  getFee = () => {
+    const { fee }  = this.xrplClient.getState()
+    return String(fee.avg || fee.last || 12)
   }
   
   // --- private ---
