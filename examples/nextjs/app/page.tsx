@@ -11,7 +11,7 @@ export default function Home() {
   const select = (adaptor: 'xumm' | 'crossmark') => {
     console.log('connecting to', adaptor)
     if (adaptor === 'xumm') {
-      const xumm = new XummAdaptor({ apiKey: 'api-key'})
+      const xumm = new XummAdaptor({ apiKey: '7fcb00b9-b846-4ddf-ae02-2a94f18c0b2f' })
       selectWallet(xumm)
     } else {
       const crossmark = new CrossmarkAdaptor()

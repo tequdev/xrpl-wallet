@@ -2,7 +2,9 @@
   "name": "xrpl-wallet",
   "private": true,
   "scripts": {
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "version": "lerna version --no-private",
+    "publish": "lerna publish from-package"
   },
   "workspaces": [
     "packages/*"
