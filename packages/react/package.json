@@ -1,6 +1,6 @@
 {
   "name": "@xrpl-wallet/react",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
@@ -19,9 +19,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@xrpl-wallet/core": "workspace:*",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@xrpl-wallet/core": "workspace:*"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
