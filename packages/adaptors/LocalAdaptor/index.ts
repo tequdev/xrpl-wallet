@@ -18,6 +18,9 @@ export class LocalAdaptor extends WalletAdaptor {
   signIn = async () => {
     return true
   }
+  signOut = async () => {
+    return true
+  }
   getAddress = async () => {
     return new Promise<string>((resolve) => resolve(this.wallet.address))
   };

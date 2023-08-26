@@ -2,7 +2,7 @@ import { AnyJson, XrplClient } from 'xrpl-client'
 import { EVENTS, Network, SignOption, TxJson, WalletAdaptor } from "./WalletAdaptor"
 import { networkEndpoints } from './networks'
 
-export class WalletClient<T extends WalletAdaptor> {
+export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
   walletName: string
   // @ts-ignore
   xrplClient: XrplClient
@@ -17,49 +17,61 @@ export class WalletClient<T extends WalletAdaptor> {
   // events
   onAccountChange = (listener: (address: string | null) => void) => {
     this.adaptor.on(EVENTS.ACCOUNT_CHANGED, listener)
+    return () => {
+      this.adaptor.off(EVENTS.ACCOUNT_CHANGED, listener)
+    }
   }
   
   onNetworkChange = (listener: (network: Network) => void) => {
     this.adaptor.on(EVENTS.NETWORK_CHANGED, listener)
+    return () => {
+      this.adaptor.off(EVENTS.NETWORK_CHANGED, listener)
+    }
   }
   
   onConnected = (listener: () => void) => {
     this.adaptor.on(EVENTS.CONNECTED, listener)
-  }
+    return () => {
+      this.adaptor.off(EVENTS.CONNECTED, listener)
+    }
+ }
   
   onDisconnected = (listener: () => void) => {
     this.adaptor.on(EVENTS.DISCONNECTED, listener)
+    return () => {
+      this.adaptor.off(EVENTS.DISCONNECTED, listener)
+    }
   }
   
-  async isConnected() {
+  isConnected = async () => {
     return await this.adaptor.isConnected()
   }
 
   /**
    * Connect to Wallet
    */
-  async signIn() {
+  signIn = async () => {
     return await this.adaptor.signIn()
   }
   
   /**
    * Disconnect from Wallet
    */
-  async signOut() {
+  signOut = async () => {
     return await this.adaptor.signOut()
   }
 
   /**
    * Get Wallet Address
    */
-  async getAddress() {
+  getAddress = async () => {
     return await this.adaptor.getAddress()
   }
 
   /**
    * Get Network wallet connected
    */
-  async getNetwork() {
+  getNetwork = async () => {
     const network = await this.adaptor.getNetwork()
     if (network) {
       this.network = network
@@ -74,7 +86,7 @@ export class WalletClient<T extends WalletAdaptor> {
    * Sign Transaction
    * option: autofill (default: true)
    */
-  async sign(txjson: TxJson, option?: SignOption) {
+  sign = async (txjson: TxJson, option?: SignOption) => {
     if (!txjson.LastLedgerSequence) {
       throw new Error('Transaction must contain a LastLedgerSequence value for reliable submission.',)
     }
@@ -85,14 +97,14 @@ export class WalletClient<T extends WalletAdaptor> {
    * Sign and Submit Transaction
    * option: autofill (default: true)
    */
-  async signAndSubmit(txjson: TxJson, option?: SignOption) {
+  signAndSubmit = async (txjson: TxJson, option?: SignOption) => {
     return await this.adaptor.signAndSubmit(txjson, option)
   }
 
   /**
    * Submit Transaction(and Walt for validated)
    */
-  async submit(txblob: string) {
+  submit = async (txblob: string) => {
     const submitResult = await this.xrplClient.send({ command: 'submit', tx_blob: txblob })
     if (submitResult.error) {
       throw new Error(`${submitResult.error} : ${submitResult.error_exception}`)
@@ -114,7 +126,7 @@ export class WalletClient<T extends WalletAdaptor> {
     return txResponse
   }
 
-  async autofill(txjson: TxJson) {
+  autofill = async (txjson: TxJson) => {
     if (!txjson.Account) {
       txjson.Account = await this.getAddress()
     }
@@ -131,19 +143,17 @@ export class WalletClient<T extends WalletAdaptor> {
     return txjson
   }
   
-  async getAccountSequence() {
-    console.log(await this.getAddress())
+  getAccountSequence = async () => {
     const result = await this.xrplClient.send({ command: 'account_info', account: await this.getAddress() })
-    console.log(result)
     return result.account_data.Sequence as number
   }
   
-  async getLedgerSequece(offset: number = 20) {
+  getLedgerSequece = async (offset: number = 20) => {
     const result = await this.xrplClient.send({ command: 'ledger', ledger_index: 'validated' })
     return (result.ledger_index as number) + offset
   }
   
-  async getFee() {
+  getFee = async () => {
     const result = await this.xrplClient.send({ command: 'fee' })
     return result.drops.base_fee as string
   }
@@ -152,7 +162,7 @@ export class WalletClient<T extends WalletAdaptor> {
   /**
    * Change Network
    */
-  private changeNetwork(network: Network) {
+  private changeNetwork = (network: Network) => {
     if (typeof network.server === 'string' && networkEndpoints.hasOwnProperty(network.server)) {
       // @ts-ignore 
       this.xrplClient = new XrplClient(networkEndpoints[network.server])

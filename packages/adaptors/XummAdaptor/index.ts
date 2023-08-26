@@ -12,10 +12,22 @@ export class XummAdaptor extends WalletAdaptor {
   constructor({ apiKey, apiSecret }: XummlAdaptorProps) {
     super()
     this.xumm = new Xumm(apiKey, apiSecret)
-    this.xumm.on('success', () => this.emit(EVENTS.CONNECTED))
-    this.xumm.on('retrieved', () => this.emit(EVENTS.CONNECTED))
-    this.xumm.on('loggedout', () => this.emit(EVENTS.DISCONNECTED))
-    this.xumm.on('logout', () => this.emit(EVENTS.DISCONNECTED))
+    this.xumm.on('success', async () => {
+      this.emit(EVENTS.CONNECTED)
+      this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
+    })
+    this.xumm.on('retrieved', async () => {
+      this.emit(EVENTS.CONNECTED)
+      this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
+    })
+    this.xumm.on('loggedout', () => {
+      this.emit(EVENTS.DISCONNECTED)
+      this.emit(EVENTS.ACCOUNT_CHANGED, null)
+    })
+    this.xumm.on('logout', () => {
+      this.emit(EVENTS.DISCONNECTED)
+      this.emit(EVENTS.ACCOUNT_CHANGED, null)
+    })
   }
   isConnected = async () => {
     await this.xumm.environment.ready
@@ -25,7 +37,8 @@ export class XummAdaptor extends WalletAdaptor {
     })
   }
   signIn = async () => {
-    if (await this.xumm.authorize()) {
+    const result = await this.xumm.authorize()
+    if (result && !(result instanceof Error)) {
       return true
     } else {
       return false
