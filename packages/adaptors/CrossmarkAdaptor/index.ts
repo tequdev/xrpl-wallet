@@ -1,24 +1,49 @@
-import { WalletAdaptor, SignOption, TxJson } from '@xrpl-wallet/core'
+import { WalletAdaptor, SignOption, TxJson, EVENTS, Network } from '@xrpl-wallet/core'
 import sdk from '@crossmarkio/sdk'
+import { EVENTS as CrossmarkEVENTS } from '@crossmarkio/sdk/dist/src/typings/extension'
 
 export class CrossmarkAdaptor extends WalletAdaptor {
   name = 'CROSSMARK'
+  constructor() {
+    super()
+    sdk.on(CrossmarkEVENTS.ALL, (param) => {
+      console.log('ALL', param)
+    })
+    sdk.on(CrossmarkEVENTS.CONNECT, () => this.emit(EVENTS.CONNECTED))
+    sdk.on(CrossmarkEVENTS.DISCONNECT, () => this.emit(EVENTS.DISCONNECTED))
+    sdk.on(CrossmarkEVENTS.SIGNOUT, () => this.emit(EVENTS.DISCONNECTED))
+    sdk.on(CrossmarkEVENTS.ACCOUNTS_CHANGED, (address: string | null) => {
+      console.log('ACCOUNTS_CHANGED', address)
+      this.emit(EVENTS.ACCOUNT_CHANGED, address)
+    })
+    sdk.on(CrossmarkEVENTS.NETWORK_CHANGE, (network: Network) => this.emit(EVENTS.NETWORK_CHANGED, network))
+  }
   isConnected = async () => {
-    const result = await sdk.isConnected()
-    return result.response.data.isConnected
+    return sdk.isConnected()
   }
   signIn = async () => {
     const result = await sdk.signInAndWait()
+    console.log(result)
     return !!result.response.data.address
   }
+  signOut = async () => {
+    try {
+      // TODO: sdk.signOutAndWait()
+      sdk.session.handleSignOut()
+      this.emit(EVENTS.DISCONNECTED)
+      return true
+    }catch(e) {
+      console.error(e)
+      return false
+    }
+  }
   getAddress = async () => {
-    const result = await sdk.getAddress()
-    console.log(result)
-    return result.response.data.address
+    return sdk.getAddress() || null
   };
   getNetwork = async () => {
-    const result = await sdk.getNetwork()
-    return { network: result.response.data.network.type, server: result.response.data.network.wss }
+    const result = sdk.getNetwork()
+    if(!result) return null
+    return { network: result.type, server: result.wss}
   }
   sign = async (txjson: Record<string, any>, option?: SignOption) => {
     const result = await sdk.signAndWait(txjson)

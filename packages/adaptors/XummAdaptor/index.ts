@@ -1,4 +1,4 @@
-import { SignOption, TxJson, WalletAdaptor } from '@xrpl-wallet/core'
+import { EVENTS, SignOption, TxJson, WalletAdaptor } from '@xrpl-wallet/core'
 import { Xumm } from 'xumm'
 
 type XummlAdaptorProps = {
@@ -12,6 +12,10 @@ export class XummAdaptor extends WalletAdaptor {
   constructor({ apiKey, apiSecret }: XummlAdaptorProps) {
     super()
     this.xumm = new Xumm(apiKey, apiSecret)
+    this.xumm.on('success', () => this.emit(EVENTS.CONNECTED))
+    this.xumm.on('retrieved', () => this.emit(EVENTS.CONNECTED))
+    this.xumm.on('loggedout', () => this.emit(EVENTS.DISCONNECTED))
+    this.xumm.on('logout', () => this.emit(EVENTS.DISCONNECTED))
   }
   isConnected = async () => {
     await this.xumm.environment.ready
@@ -27,12 +31,23 @@ export class XummAdaptor extends WalletAdaptor {
       return false
     }
   }
+  signOut = async () => {
+    try {
+      await this.xumm.logout()
+      return true
+    } catch (e) {
+      console.error(e)
+      return false
+    }
+  }
   getAddress = async () => {
-    const account = await this.xumm.user.account
-    return account || null
+    const account = await this.xumm.user.account || null
+    this.emit(EVENTS.ACCOUNT_CHANGED, account)
+    return account
   };
   getNetwork = async () => {
     const server = (await this.xumm.user.networkEndpoint)!
+    this.emit(EVENTS.NETWORK_CHANGED, { server })
     return { server }
   }
   sign = async (txjson: Record<string, any>, option?: SignOption) => {

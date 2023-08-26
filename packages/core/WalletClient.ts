@@ -1,5 +1,5 @@
 import { AnyJson, XrplClient } from 'xrpl-client'
-import { Network, SignOption, TxJson, WalletAdaptor } from "./WalletAdaptor"
+import { EVENTS, Network, SignOption, TxJson, WalletAdaptor } from "./WalletAdaptor"
 import { networkEndpoints } from './networks'
 
 export class WalletClient<T extends WalletAdaptor> {
@@ -13,6 +13,23 @@ export class WalletClient<T extends WalletAdaptor> {
     this.network = network
     this.changeNetwork(network)
   }
+
+  // events
+  onAccountChange = (listener: (address: string | null) => void) => {
+    this.adaptor.on(EVENTS.ACCOUNT_CHANGED, listener)
+  }
+  
+  onNetworkChange = (listener: (network: Network) => void) => {
+    this.adaptor.on(EVENTS.NETWORK_CHANGED, listener)
+  }
+  
+  onConnected = (listener: () => void) => {
+    this.adaptor.on(EVENTS.CONNECTED, listener)
+  }
+  
+  onDisconnected = (listener: () => void) => {
+    this.adaptor.on(EVENTS.DISCONNECTED, listener)
+  }
   
   async isConnected() {
     return await this.adaptor.isConnected()
@@ -23,6 +40,13 @@ export class WalletClient<T extends WalletAdaptor> {
    */
   async signIn() {
     return await this.adaptor.signIn()
+  }
+  
+  /**
+   * Disconnect from Wallet
+   */
+  async signOut() {
+    return await this.adaptor.signOut()
   }
 
   /**
@@ -89,6 +113,7 @@ export class WalletClient<T extends WalletAdaptor> {
     })
     return txResponse
   }
+
   async autofill(txjson: TxJson) {
     if (!txjson.Account) {
       txjson.Account = await this.getAddress()

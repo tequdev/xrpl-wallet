@@ -73,8 +73,8 @@ importers:
   packages/adaptors:
     dependencies:
       '@crossmarkio/sdk':
-        specifier: 0.2.2-beta
-        version: 0.2.2-beta
+        specifier: 0.2.5-beta
+        version: 0.2.5-beta
       xrpl:
         specifier: ^2.7.0
         version: 2.7.0
@@ -139,8 +139,8 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@crossmarkio/sdk@0.2.2-beta:
-    resolution: {integrity: sha512-0UBxzaxs9hLCgVcw2JLtmvQEFDiPpbN2dpW8qFFUlhmiMR9saLcuJebBWsserCzQFCBLV9ECG0a9Az3HPVPmgw==}
+  /@crossmarkio/sdk@0.2.5-beta:
+    resolution: {integrity: sha512-Xs11/jcbGgZpYl4JY2MP4hkAQq72BDQoTBYw0g/XOA0RYvtWrT6dpthJTzTb8+xg7z7YijzQdV6op6uRxamCJQ==}
     engines: {node: '>=14.16'}
     dependencies:
       '@crossmarkio/xrpl-amm': 2.9.0-beta.1
