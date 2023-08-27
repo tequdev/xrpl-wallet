@@ -18,15 +18,8 @@ export default function Home() {
       selectWallet(crossmark)
     } else {
       const walletconnect = new WalletConnectAdaptor({
-        metadata: {
-          name: 'XRPL WalletConnect Demo',
-          description: 'XRPL WalletConnect Demo',
-          url: '',
-          icons: [],
-        },
         projectId: '85ad846d8aa771cd56c2bbbf30f7a183',
         network: 'testnet',
-        relayUrl: 'wss://relay.walletconnect.org',
       })
       selectWallet(walletconnect)
     }

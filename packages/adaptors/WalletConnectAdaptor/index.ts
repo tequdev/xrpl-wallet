@@ -11,15 +11,16 @@ import { getOptionalNamespaces, getRequiredNamespaces } from './helpers'
 
 type Props = {
   projectId: string
-  relayUrl: string
-  metadata: {
+  relayUrl?: string
+  metadata?: {
     name: string
     description: string
     url: string
     icons: string[]
     verifyUrl?: string
   }
-  network: 'mainnet' | 'testnet' | 'devnet' | number
+  /** default: mainnet */
+  network?: 'mainnet' | 'testnet' | 'devnet' | number
 }
 
 export class WalletConnectAdaptor extends WalletAdaptor {
@@ -31,19 +32,19 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   private session: SessionTypes.Struct | undefined
   private chain: ChainData['id']
   private accounts: string[] = []
-  private relayUrl: string
+  private relayUrl?: string
 
-  constructor({ projectId, relayUrl, metadata, network }: Props) {
+  constructor({ projectId, relayUrl, metadata, network = 'mainnet' }: Props) {
     super()
     this.projectId = projectId
     this.chain =
       network === 'mainnet'
         ? mainnet.id
         : network === 'testnet'
-        ? testnet.id
-        : network === 'devnet'
-        ? devnet.id
-        : `xrpl:${network}`
+          ? testnet.id
+          : network === 'devnet'
+            ? devnet.id
+            : `xrpl:${network}`
     this.relayUrl = relayUrl
     this.web3Modal = new Web3Modal({
       projectId: this.projectId,
@@ -55,9 +56,9 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       ],
     })
     Client.init({
+      projectId,
       logger: DEFAULT_LOGGER,
       relayUrl: relayUrl,
-      projectId,
       metadata: getAppMetadata() || metadata,
     }).then((_client) => {
       this.client = _client

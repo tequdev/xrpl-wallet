@@ -18,6 +18,10 @@ Coming soon...
 
 [CROSSMARK](https://crossmark.io)
 
+### WalletConnect
+
+[WalletConnect](https://specs.walletconnect.com/2.0/blockchain-rpc/xrpl-rpc)
+
 ## Publish 
 
 1. `pnpm run version`
