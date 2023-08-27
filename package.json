@@ -4,8 +4,10 @@
   "scripts": {
     "build": "lerna run build",
     "lint": "eslint --cache --fix . && prettier --write **/*.{ts,tsx,js}",
-    "version": "lerna version --no-private",
-    "publish": "lerna publish from-package"
+    "lint:check": "eslint --cache . && prettier --check **/*.{ts,tsx,js}",
+    "version": "pnpm run lint:check && lerna version --no-private",
+    "publish": "pnpm run lint:check && lerna publish from-package",
+    "preinstall": "npx only-allow pnpm"
   },
   "workspaces": [
     "packages/*"
