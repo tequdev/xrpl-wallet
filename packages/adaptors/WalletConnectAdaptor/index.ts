@@ -37,14 +37,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   constructor({ projectId, relayUrl, metadata, network = 'mainnet' }: Props) {
     super()
     this.projectId = projectId
-    this.chain =
-      network === 'mainnet'
-        ? mainnet.id
-        : network === 'testnet'
-          ? testnet.id
-          : network === 'devnet'
-            ? devnet.id
-            : `xrpl:${network}`
+    this.chain = this.parseNetworkToChainId(network)
     this.relayUrl = relayUrl
     this.web3Modal = new Web3Modal({
       projectId: this.projectId,
@@ -65,6 +58,19 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       this._subscribeToEvents()
       this._checkPersistedState()
     })
+  }
+
+  private parseNetworkToChainId = (network: string | number) => {
+    switch (network) {
+      case 'mainnet':
+        return mainnet.id // xrpl:0
+      case 'testnet':
+        return testnet.id // xrpl:1
+      case 'devnet':
+        return devnet.id // xrpl:2
+      default:
+        return `xrpl:${network}`
+    }
   }
 
   // createClient = async () => {
