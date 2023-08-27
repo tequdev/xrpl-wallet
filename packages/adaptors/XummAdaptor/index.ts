@@ -54,25 +54,25 @@ export class XummAdaptor extends WalletAdaptor {
     }
   }
   getAddress = async () => {
-    const account = await this.xumm.user.account || null
+    const account = (await this.xumm.user.account) || null
     this.emit(EVENTS.ACCOUNT_CHANGED, account)
     return account
-  };
+  }
   getNetwork = async () => {
     const server = (await this.xumm.user.networkEndpoint)!
     this.emit(EVENTS.NETWORK_CHANGED, { server })
     return { server }
   }
-  sign = async (txjson: Record<string, any>, option?: SignOption) => {
+  sign = async (txjson: Record<string, any>, _option?: SignOption) => {
     const result = await this.xumm.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: false } })
     if (!result) return null
     const hash = result.payload.response.txid!
     const tx_blob = result.payload.response.hex!
     return { tx_blob, hash }
   }
-  signAndSubmit = async (txjson: TxJson, option?: SignOption | undefined) => {
+  signAndSubmit = async (txjson: TxJson, _option?: SignOption | undefined) => {
     const result = await this.xumm.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: true } })
     if (!result) return null
     return { tx_json: result.payload.payload.request_json as Record<string, any> }
-  };
+  }
 }

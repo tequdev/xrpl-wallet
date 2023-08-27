@@ -1,9 +1,9 @@
-import EventEmitter from "events";
+import EventEmitter from 'events'
 
 export type NETWORK_TYPE = 'mainnet' | 'testnet' | 'devnet'
 
 export type Network = {
-  server: NETWORK_TYPE | string | string[];
+  server: NETWORK_TYPE | string | string[]
 }
 
 export type TxJson = Record<string, any>
@@ -24,27 +24,27 @@ export enum EVENTS {
 
 // events
 declare interface xEventsEmitter {
-  on(event: EVENTS.CONNECTED, listener: () => void): this;
-  on(event: EVENTS.DISCONNECTED, listener: () => void): this;
-  on(event: EVENTS.ACCOUNT_CHANGED, listener: (address: string | null) => void): this;
-  on(event: EVENTS.NETWORK_CHANGED, listener: (network: Network) => void): this;
-  
-  off(event: EVENTS.CONNECTED, listener: () => void): this;
-  off(event: EVENTS.DISCONNECTED, listener: () => void): this;
-  off(event: EVENTS.ACCOUNT_CHANGED, listener: (address: string | null) => void): this;
-  off(event: EVENTS.NETWORK_CHANGED, listener: (network: Network) => void): this;
-  
+  on(event: EVENTS.CONNECTED, listener: () => void): this
+  on(event: EVENTS.DISCONNECTED, listener: () => void): this
+  on(event: EVENTS.ACCOUNT_CHANGED, listener: (address: string | null) => void): this
+  on(event: EVENTS.NETWORK_CHANGED, listener: (network: Network) => void): this
+
+  off(event: EVENTS.CONNECTED, listener: () => void): this
+  off(event: EVENTS.DISCONNECTED, listener: () => void): this
+  off(event: EVENTS.ACCOUNT_CHANGED, listener: (address: string | null) => void): this
+  off(event: EVENTS.NETWORK_CHANGED, listener: (network: Network) => void): this
+
   emit(event: EVENTS.CONNECTED): boolean
   emit(event: EVENTS.DISCONNECTED): boolean
   emit(event: EVENTS.ACCOUNT_CHANGED, address: string | null): boolean
   emit(event: EVENTS.NETWORK_CHANGED, network: Network): boolean
 
-  on(event: string, listener: Function): this;
+  on(event: string, listener: Function): this
 }
 
 class xEventsEmitter extends EventEmitter {
   constructor() {
-    super();
+    super()
   }
 }
 

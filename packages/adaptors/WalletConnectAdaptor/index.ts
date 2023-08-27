@@ -1,23 +1,23 @@
-import Client from "@walletconnect/sign-client";
-import { PairingTypes, SessionTypes } from "@walletconnect/types";
-import { Web3Modal } from "@web3modal/standalone";
-
+import Client from '@walletconnect/sign-client'
+import { PairingTypes, SessionTypes } from '@walletconnect/types'
+import { getAppMetadata, getSdkError } from '@walletconnect/utils'
+import { Web3Modal } from '@web3modal/standalone'
 import { WalletAdaptor, SignOption, TxJson, EVENTS } from '@xrpl-wallet/core'
-import { getAppMetadata, getSdkError } from "@walletconnect/utils";
-import { DEFAULT_LOGGER, DEFAULT_XRPL_METHODS } from "./constants";
-import { getOptionalNamespaces, getRequiredNamespaces } from "./helpers";
-import { ChainData, devnet, mainnet, testnet } from "@xrpl-walletconnect/core";
+import { ChainData, devnet, mainnet, testnet } from '@xrpl-walletconnect/core'
 import { encode } from 'ripple-binary-codec'
+
+import { DEFAULT_LOGGER, DEFAULT_XRPL_METHODS } from './constants'
+import { getOptionalNamespaces, getRequiredNamespaces } from './helpers'
 
 type Props = {
   projectId: string
   relayUrl: string
   metadata: {
-    name: string;
-    description: string;
-    url: string;
-    icons: string[];
-    verifyUrl?: string;
+    name: string
+    description: string
+    url: string
+    icons: string[]
+    verifyUrl?: string
   }
   network: 'mainnet' | 'testnet' | 'devnet' | number
 }
@@ -36,15 +36,22 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   constructor({ projectId, relayUrl, metadata, network }: Props) {
     super()
     this.projectId = projectId
-    this.chain = network === 'mainnet' ? mainnet.id : network === 'testnet' ? testnet.id : network === 'devnet' ? devnet.id : `xrpl:${network}`
+    this.chain =
+      network === 'mainnet'
+        ? mainnet.id
+        : network === 'testnet'
+        ? testnet.id
+        : network === 'devnet'
+        ? devnet.id
+        : `xrpl:${network}`
     this.relayUrl = relayUrl
     this.web3Modal = new Web3Modal({
       projectId: this.projectId,
-      themeMode: "light",
+      themeMode: 'light',
       walletConnectVersion: 2,
       explorerRecommendedWalletIds: [
         // Bifrost Wallet
-        "37a686ab6223cd42e2886ed6e5477fce100a4fb565dcd57ed4f81f7c12e93053",
+        '37a686ab6223cd42e2886ed6e5477fce100a4fb565dcd57ed4f81f7c12e93053',
       ],
     })
     Client.init({
@@ -64,63 +71,58 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   // }
 
   private _subscribeToEvents = () => {
-    if (typeof this.client === "undefined") {
-      throw new Error("WalletConnect is not initialized");
+    if (typeof this.client === 'undefined') {
+      throw new Error('WalletConnect is not initialized')
     }
-    this.client.on("session_ping", (args) => {
-      console.log("EVENT", "session_ping", args);
-    });
-    this.client.on("session_event", (args) => {
-      console.log("EVENT", "session_event", args);
-    });
-    this.client.on("session_update", ({ topic, params }) => {
-      console.log("EVENT", "session_update", { topic, params });
-      const { namespaces } = params;
-      const _session = this.client.session.get(topic);
-      const updatedSession = { ..._session, namespaces };
-      this.onSessionConnected(updatedSession);
+    this.client.on('session_ping', (args) => {
+      console.log('EVENT', 'session_ping', args)
+    })
+    this.client.on('session_event', (args) => {
+      console.log('EVENT', 'session_event', args)
+    })
+    this.client.on('session_update', ({ topic, params }) => {
+      console.log('EVENT', 'session_update', { topic, params })
+      const { namespaces } = params
+      const _session = this.client.session.get(topic)
+      const updatedSession = { ..._session, namespaces }
+      this.onSessionConnected(updatedSession)
       this.emit(EVENTS.CONNECTED)
-    });
+    })
 
-    this.client.on("session_delete", () => {
-      console.log("EVENT", "session_delete");
-      this.reset();
+    this.client.on('session_delete', () => {
+      console.log('EVENT', 'session_delete')
+      this.reset()
       this.emit(EVENTS.DISCONNECTED)
-    });
+    })
   }
 
   private _checkPersistedState = () => {
-    if (typeof this.client === "undefined") {
-      throw new Error("WalletConnect is not initialized");
+    if (typeof this.client === 'undefined') {
+      throw new Error('WalletConnect is not initialized')
     }
     // populates existing pairings to state
-    this.pairing = this.client.pairing.getAll({ active: true });
-    console.log(
-      "RESTORED PAIRINGS: ",
-      this.client.pairing.getAll({ active: true })
-    );
+    this.pairing = this.client.pairing.getAll({ active: true })
+    console.log('RESTORED PAIRINGS: ', this.client.pairing.getAll({ active: true }))
 
-    if (typeof this.session !== "undefined") return;
+    if (typeof this.session !== 'undefined') return
     // populates (the last) existing session to state
     if (this.client.session.length) {
-      const lastKeyIndex = this.client.session.keys.length - 1;
-      const _session = this.client.session.get(
-        this.client.session.keys[lastKeyIndex]
-      );
-      console.log("RESTORED SESSION:", _session);
-      this.onSessionConnected(_session);
-      return _session;
+      const lastKeyIndex = this.client.session.keys.length - 1
+      const _session = this.client.session.get(this.client.session.keys[lastKeyIndex])
+      console.log('RESTORED SESSION:', _session)
+      this.onSessionConnected(_session)
+      return _session
     }
   }
 
   private onSessionConnected = async (_session: SessionTypes.Struct) => {
     const allNamespaceAccounts = Object.values(_session.namespaces)
       .map((namespace) => namespace.accounts)
-      .flat();
-    const allNamespaceChains = Object.keys(_session.namespaces).flatMap((ns) => _session.namespaces[ns].chains || []);
+      .flat()
+    const allNamespaceChains = Object.keys(_session.namespaces).flatMap((ns) => _session.namespaces[ns].chains || [])
 
-    this.session = _session;
-    this.chain = allNamespaceChains[0];
+    this.session = _session
+    this.chain = allNamespaceChains[0]
     this.accounts = [...new Set(allNamespaceAccounts)]
     if (this.accounts.length) {
       this.emit(EVENTS.ACCOUNT_CHANGED, await this.getAddress())
@@ -132,9 +134,9 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   }
 
   reset = () => {
-    this.session = undefined;
-    this.accounts = [];
-    this.chain = this.chain;
+    this.session = undefined
+    this.accounts = []
+    this.chain = this.chain
     this.relayUrl
     // this.relayUrl = relayUrl;
   }
@@ -144,39 +146,36 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   }
 
   signIn = async () => {
-    if (typeof this.client === "undefined") {
-      throw new Error("WalletConnect is not initialized");
+    if (typeof this.client === 'undefined') {
+      throw new Error('WalletConnect is not initialized')
     }
-    console.log("connect, pairing topic is:", this.pairing[0]?.topic);
+    console.log('connect, pairing topic is:', this.pairing[0]?.topic)
     try {
-      const requiredNamespaces = getRequiredNamespaces([this.chain]);
-      const optionalNamespaces = getOptionalNamespaces([this.chain]);
-      console.log(
-        "requiredNamespaces config for connect:",
-        requiredNamespaces
-      );
+      const requiredNamespaces = getRequiredNamespaces([this.chain])
+      const optionalNamespaces = getOptionalNamespaces([this.chain])
+      console.log('requiredNamespaces config for connect:', requiredNamespaces)
 
       const { uri, approval } = await this.client.connect({
         pairingTopic: this.pairing[0]?.topic,
         requiredNamespaces,
-        optionalNamespaces
-      });
+        optionalNamespaces,
+      })
 
       // Open QRCode modal if a URI was returned (i.e. we're not connecting an existing pairing).
       if (uri) {
         // Create a flat array of all requested chains across namespaces.
         const standaloneChains = Object.values(requiredNamespaces)
           .map((namespace) => namespace.chains)
-          .flat() as string[];
+          .flat() as string[]
 
-        this.web3Modal.openModal({ uri, standaloneChains });
+        this.web3Modal.openModal({ uri, standaloneChains })
       }
 
-      const session = await approval();
-      console.log("Established session:", session);
-      await this.onSessionConnected(session);
+      const session = await approval()
+      console.log('Established session:', session)
+      await this.onSessionConnected(session)
       // Update known pairings after session is connected.
-      this.pairing = this.client.pairing.getAll({ active: true });
+      this.pairing = this.client.pairing.getAll({ active: true })
       this.emit(EVENTS.CONNECTED)
       const network = await this.getNetwork()
       if (network) {
@@ -184,46 +183,46 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       }
       return true
     } catch (e) {
-      console.error(e);
+      console.error(e)
       this.emit(EVENTS.DISCONNECTED)
       return false
       // ignore rejection
     } finally {
       // close modal in case it was open
-      this.web3Modal.closeModal();
+      this.web3Modal.closeModal()
     }
   }
 
   signOut = async () => {
-    if (typeof this.client === "undefined") {
-      throw new Error("WalletConnect is not initialized");
+    if (typeof this.client === 'undefined') {
+      throw new Error('WalletConnect is not initialized')
     }
-    if (typeof this.session === "undefined") {
-      throw new Error("Session is not connected");
+    if (typeof this.session === 'undefined') {
+      throw new Error('Session is not connected')
     }
     try {
       await this.client.disconnect({
         topic: this.session.topic,
-        reason: getSdkError("USER_DISCONNECTED"),
-      });
+        reason: getSdkError('USER_DISCONNECTED'),
+      })
       this.emit(EVENTS.DISCONNECTED)
       return true
     } catch (error) {
-      console.error("SignClient.disconnect failed:", error);
+      console.error('SignClient.disconnect failed:', error)
       return false
     } finally {
       // Reset app state after disconnect.
-      this.reset();
+      this.reset()
     }
   }
 
   getAddress = async () => {
     if (!this.accounts.length) return null
     return this.accounts[0].split(':')[2]
-  };
+  }
 
   getNetwork = async () => {
-    const networkId = this.chain.split(":")[1]
+    const networkId = this.chain.split(':')[1]
     if (networkId === '0') return { server: 'mainnet' }
     if (networkId === '1') return { server: 'testnet' }
     if (networkId === '2') return { server: 'devnet' }
@@ -242,8 +241,8 @@ export class WalletConnectAdaptor extends WalletAdaptor {
           submit: false,
         },
       },
-    });
-    const hash = result.tx_json.hash;
+    })
+    const hash = result.tx_json.hash
     const tx_blob = encode(result.tx_json)
     return { tx_blob, hash }
   }
@@ -260,7 +259,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
           submit: true,
         },
       },
-    });
+    })
     return { tx_json: result.tx_json }
   }
 }

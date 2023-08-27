@@ -1,5 +1,6 @@
 import { AnyJson, XrplClient } from 'xrpl-client'
-import { EVENTS, Network, SignOption, TxJson, WalletAdaptor } from "./WalletAdaptor"
+
+import { EVENTS, Network, SignOption, TxJson, WalletAdaptor } from './WalletAdaptor'
 import { networkEndpoints } from './networks'
 
 export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
@@ -8,7 +9,10 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
   xrplClient: XrplClient
   private network: Network
 
-  constructor(private readonly adaptor: T, network: Network = { server: 'mainnet' }) {
+  constructor(
+    private readonly adaptor: T,
+    network: Network = { server: 'mainnet' },
+  ) {
     this.walletName = adaptor.name
     this.network = network
     this.changeNetwork(network)
@@ -24,28 +28,28 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
       this.adaptor.off(EVENTS.ACCOUNT_CHANGED, listener)
     }
   }
-  
+
   onNetworkChange = (listener: (network: Network) => void) => {
     this.adaptor.on(EVENTS.NETWORK_CHANGED, listener)
     return () => {
       this.adaptor.off(EVENTS.NETWORK_CHANGED, listener)
     }
   }
-  
+
   onConnected = (listener: () => void) => {
     this.adaptor.on(EVENTS.CONNECTED, listener)
     return () => {
       this.adaptor.off(EVENTS.CONNECTED, listener)
     }
- }
-  
+  }
+
   onDisconnected = (listener: () => void) => {
     this.adaptor.on(EVENTS.DISCONNECTED, listener)
     return () => {
       this.adaptor.off(EVENTS.DISCONNECTED, listener)
     }
   }
-  
+
   isConnected = async () => {
     return await this.adaptor.isConnected()
   }
@@ -56,7 +60,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
   signIn = async () => {
     return await this.adaptor.signIn()
   }
-  
+
   /**
    * Disconnect from Wallet
    */
@@ -91,7 +95,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
    */
   sign = async (txjson: TxJson, option?: SignOption) => {
     if (!txjson.LastLedgerSequence) {
-      throw new Error('Transaction must contain a LastLedgerSequence value for reliable submission.',)
+      throw new Error('Transaction must contain a LastLedgerSequence value for reliable submission.')
     }
     return await this.adaptor.sign(txjson, option)
   }
@@ -121,8 +125,10 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
         if (!txResponse.error) {
           resolve(txResponse)
         } else if (ledger_index > LastLedgerSequence) {
-          reject(`The latest ledger sequence ${ledger_index} is greater than the transaction's LastLedgerSequence (${LastLedgerSequence}).\n` +
-            `Preliminary result: ${submitResult.engine_result}`)
+          reject(
+            `The latest ledger sequence ${ledger_index} is greater than the transaction's LastLedgerSequence (${LastLedgerSequence}).\n` +
+              `Preliminary result: ${submitResult.engine_result}`,
+          )
         }
       })
     })
@@ -136,38 +142,40 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     if (!txjson.Sequence) {
       txjson.Sequence = await this.getAccountSequence()
     }
-    if(!txjson.LastLedgerSequence) {
+    if (!txjson.LastLedgerSequence) {
       txjson.LastLedgerSequence = this.getLedgerSequece()
     }
-    if(!txjson.Fee) {
+    if (!txjson.Fee) {
       txjson.Fee = this.getFee()
     }
     // TODO: NetworkID
     return txjson
   }
-  
+
   getAccountSequence = async () => {
     const result = await this.xrplClient.send({ command: 'account_info', account: await this.getAddress() })
     return result.account_data.Sequence as number
   }
-  
+
   getLedgerSequece = (offset: number = 20) => {
-    const { ledger: { last: ledger_index } } = this.xrplClient.getState()
+    const {
+      ledger: { last: ledger_index },
+    } = this.xrplClient.getState()
     return (ledger_index as number) + offset
   }
-  
+
   getFee = () => {
-    const { fee }  = this.xrplClient.getState()
+    const { fee } = this.xrplClient.getState()
     return String(fee.avg || fee.last || 12)
   }
-  
+
   // --- private ---
   /**
    * Change Network
    */
   private changeNetwork = (network: Network) => {
     if (typeof network.server === 'string' && networkEndpoints.hasOwnProperty(network.server)) {
-      // @ts-ignore 
+      // @ts-ignore
       this.xrplClient = new XrplClient(networkEndpoints[network.server])
     } else {
       this.xrplClient = new XrplClient(network.server)

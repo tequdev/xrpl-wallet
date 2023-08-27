@@ -1,7 +1,7 @@
-import { useRef, useSyncExternalStore } from "react";
-import { walletClientContext } from '../context'
+import { useRef, useSyncExternalStore } from 'react'
+import { useContext } from 'react'
 
-import { useContext } from "react"
+import { walletClientContext } from '../context'
 
 const useAccount = () => {
   const accountRef = useRef<string | null>(null)
@@ -25,8 +25,12 @@ const useAccount = () => {
       unsubscribeAccountChange && unsubscribeAccountChange()
     }
   }
-  const account = useSyncExternalStore(subscribe, () => accountRef.current, () => null)
-  
+  const account = useSyncExternalStore(
+    subscribe,
+    () => accountRef.current,
+    () => null,
+  )
+
   return account
 }
 

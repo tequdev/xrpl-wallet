@@ -1,8 +1,8 @@
-import { useRef, useSyncExternalStore } from "react";
-import { walletClientContext } from '../context'
+import { Network } from '@xrpl-wallet/core'
+import { useRef, useSyncExternalStore } from 'react'
+import { useContext } from 'react'
 
-import { useContext } from "react"
-import { Network } from "@xrpl-wallet/core";
+import { walletClientContext } from '../context'
 
 const useNetwork = () => {
   const networkRef = useRef<Network | null>(null)
@@ -12,11 +12,15 @@ const useNetwork = () => {
       networkRef.current = network
       callback()
     })
-    return () => { 
+    return () => {
       unsubscribeNetworkChange && unsubscribeNetworkChange()
     }
   }
-  const network = useSyncExternalStore(subscribe, () => networkRef.current, () => null)
+  const network = useSyncExternalStore(
+    subscribe,
+    () => networkRef.current,
+    () => null,
+  )
 
   return network
 }

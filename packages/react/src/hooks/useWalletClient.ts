@@ -1,6 +1,6 @@
-import { walletClientContext } from '../context'
+import { useContext } from 'react'
 
-import { useContext } from "react"
+import { walletClientContext } from '../context'
 
 const useWalletClient = () => {
   const { walletClient, selectWallet } = useContext(walletClientContext)

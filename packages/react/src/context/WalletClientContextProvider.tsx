@@ -1,5 +1,6 @@
-import { useState } from "react"
 import { WalletAdaptor, WalletClient } from '@xrpl-wallet/core'
+import { useState } from 'react'
+
 import { walletClientContext } from './WalletClientContext'
 
 type ProviderProps = {
