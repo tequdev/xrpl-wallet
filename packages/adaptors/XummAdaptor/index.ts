@@ -15,10 +15,14 @@ export class XummAdaptor extends WalletAdaptor {
     this.xumm.on('success', async () => {
       this.emit(EVENTS.CONNECTED)
       this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
+      const server = (await this.xumm.user.networkEndpoint)!
+      this.emit(EVENTS.NETWORK_CHANGED, { server })
     })
     this.xumm.on('retrieved', async () => {
       this.emit(EVENTS.CONNECTED)
       this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
+      const server = (await this.xumm.user.networkEndpoint)!
+      this.emit(EVENTS.NETWORK_CHANGED, { server })
     })
     this.xumm.on('loggedout', () => {
       this.emit(EVENTS.DISCONNECTED)
@@ -55,12 +59,10 @@ export class XummAdaptor extends WalletAdaptor {
   }
   getAddress = async () => {
     const account = (await this.xumm.user.account) || null
-    this.emit(EVENTS.ACCOUNT_CHANGED, account)
     return account
   }
   getNetwork = async () => {
     const server = (await this.xumm.user.networkEndpoint)!
-    this.emit(EVENTS.NETWORK_CHANGED, { server })
     return { server }
   }
   sign = async (txjson: Record<string, any>, _option?: SignOption) => {

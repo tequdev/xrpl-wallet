@@ -4,9 +4,9 @@ import { useAccount, useTransaction, useWalletClient } from '@xrpl-wallet/react'
 import Image from 'next/image'
 
 export default function Home() {
-  const { selectWallet, signIn: signInWallet, signOut: signOutWallet, walletName, walletConnected } = useWalletClient()
+  const { selectWallet, signIn, signOut, walletName, walletConnected } = useWalletClient()
   const address = useAccount()
-  const txn = useTransaction()
+  const transaction = useTransaction()
 
   const select = (adaptor: 'xumm' | 'crossmark' | 'walletconnect') => {
     console.log('connecting to', adaptor)
@@ -25,19 +25,14 @@ export default function Home() {
     }
   }
 
-  const signIn = async () => {
-    await signInWallet!()
-  }
-  const signOut = async () => {
-    await signOutWallet!()
-  }
   const sendTx = async () => {
-    const tx = await txn!.autofill({
+    if (!transaction) return
+    const tx = await transaction.autofill({
       TransactionType: 'Payment',
       Destination: 'rQQQrUdN1cLdNmxH4dHfKgmX5P4kf3ZrM',
       Amount: '100',
     })
-    const result = await txn!.signAndSubmit(tx)
+    const result = await transaction.signAndSubmit(tx)
     alert(JSON.stringify(result, null, '  '))
   }
   return (
