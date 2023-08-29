@@ -31,7 +31,7 @@
     "dts": true
   },
   "dependencies": {
-    "@crossmarkio/sdk": "0.2.5-beta",
+    "@crossmarkio/sdk": "0.2.9-beta",
     "@walletconnect/sign-client": "^2.10.0",
     "@walletconnect/types": "^2.10.0",
     "@walletconnect/utils": "^2.10.0",

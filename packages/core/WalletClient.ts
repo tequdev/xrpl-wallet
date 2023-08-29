@@ -154,6 +154,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
 
   getAccountSequence = async () => {
     const result = await this.xrplClient.send({ command: 'account_info', account: await this.getAddress() })
+    if (result.error) throw new Error(result.error_message)
     return result.account_data.Sequence as number
   }
 

@@ -6,10 +6,11 @@ export class CrossmarkAdaptor extends WalletAdaptor {
   name = 'CROSSMARK'
   constructor() {
     super()
-    sdk.on(CrossmarkEVENTS.CONNECT, () => this.emit(EVENTS.CONNECTED))
-    sdk.on(CrossmarkEVENTS.DISCONNECT, () => this.emit(EVENTS.DISCONNECTED))
     sdk.on(CrossmarkEVENTS.SIGNOUT, () => this.emit(EVENTS.DISCONNECTED))
-    sdk.on(CrossmarkEVENTS.ACCOUNTS_CHANGED, (address: string | null) => this.emit(EVENTS.ACCOUNT_CHANGED, address))
+    sdk.on(CrossmarkEVENTS.USER_CHANGE, (_user) => {
+      const address = sdk.getAddress() || null
+      this.emit(EVENTS.ACCOUNT_CHANGED, address)
+    })
     sdk.on(CrossmarkEVENTS.NETWORK_CHANGE, (network: Network) => this.emit(EVENTS.NETWORK_CHANGED, network))
   }
   isConnected = async () => {
@@ -17,7 +18,13 @@ export class CrossmarkAdaptor extends WalletAdaptor {
   }
   signIn = async () => {
     const result = await sdk.signInAndWait()
-    return !!result.response.data.address
+    if (!result.response.data.address) return false
+    this.emit(EVENTS.CONNECTED)
+    const network = await this.getNetwork()
+    if (network) {
+      this.emit(EVENTS.NETWORK_CHANGED, { server: network.server })
+    }
+    return true
   }
   signOut = async () => {
     try {

@@ -103,8 +103,8 @@ importers:
   packages/adaptors:
     dependencies:
       '@crossmarkio/sdk':
-        specifier: 0.2.5-beta
-        version: 0.2.5-beta
+        specifier: 0.2.9-beta
+        version: 0.2.9-beta
       '@walletconnect/sign-client':
         specifier: ^2.10.0
         version: 2.10.0
@@ -220,12 +220,13 @@ packages:
       js-tokens: 4.0.0
     dev: true
 
-  /@crossmarkio/sdk@0.2.5-beta:
-    resolution: {integrity: sha512-Xs11/jcbGgZpYl4JY2MP4hkAQq72BDQoTBYw0g/XOA0RYvtWrT6dpthJTzTb8+xg7z7YijzQdV6op6uRxamCJQ==}
+  /@crossmarkio/sdk@0.2.9-beta:
+    resolution: {integrity: sha512-TBy5YSzdwQpLLE5v0uAsvhPsVjitFWg3AhFTLO9wc77hZu5tov4yN4LjCiwFLgrFgAjhViwYvIUotwO0jVsa3A==}
     engines: {node: '>=14.16'}
     dependencies:
       '@crossmarkio/xrpl-amm': 2.9.0-beta.1
       '@crossmarkio/xrpl-sidechain': 2.9.0-beta.0
+      events: 3.3.0
       uuid: 9.0.0
       xrpl: 2.10.0
     transitivePeerDependencies:
