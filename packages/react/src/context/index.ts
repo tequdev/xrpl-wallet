@@ -1,2 +1,1 @@
-export { walletClientContext } from './WalletClientContext'
-export { WalletClientContextProvider } from './WalletClientContextProvider'
+export { walletClientContext, WalletClientContextProvider } from './WalletClientContext'

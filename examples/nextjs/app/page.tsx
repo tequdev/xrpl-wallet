@@ -1,29 +1,11 @@
 'use client'
-import { XummAdaptor, CrossmarkAdaptor, WalletConnectAdaptor } from '@xrpl-wallet/adaptors'
-import { useAccount, useTransaction, useWalletClient } from '@xrpl-wallet/react'
+import { useAccount, useTransaction, useWalletClient, ConnectButton } from '@xrpl-wallet/react'
 import Image from 'next/image'
 
 export default function Home() {
-  const { selectWallet, signIn, signOut, walletName, walletConnected } = useWalletClient()
+  const { signOut, walletConnected } = useWalletClient()
   const address = useAccount()
   const transaction = useTransaction()
-
-  const select = (adaptor: 'xumm' | 'crossmark' | 'walletconnect') => {
-    console.log('connecting to', adaptor)
-    if (adaptor === 'xumm') {
-      const xumm = new XummAdaptor({ apiKey: '7fcb00b9-b846-4ddf-ae02-2a94f18c0b2f' })
-      selectWallet(xumm)
-    } else if (adaptor === 'crossmark') {
-      const crossmark = new CrossmarkAdaptor()
-      selectWallet(crossmark)
-    } else {
-      const walletconnect = new WalletConnectAdaptor({
-        projectId: '85ad846d8aa771cd56c2bbbf30f7a183',
-        network: 'testnet',
-      })
-      selectWallet(walletconnect)
-    }
-  }
 
   const sendTx = async () => {
     if (!transaction) return
@@ -49,15 +31,7 @@ export default function Home() {
       </div>
       {!walletConnected && (
         <div className='flex space-x-2'>
-          <button className='btn btn-outline btn-primary' onClick={() => select('xumm')}>
-            Xumm
-          </button>
-          <button className='btn btn-outline btn-primary' onClick={() => select('crossmark')}>
-            Crossmark
-          </button>
-          <button className='btn btn-outline btn-primary' onClick={() => select('walletconnect')}>
-            WalletConnect
-          </button>
+          <ConnectButton />
         </div>
       )}
       {walletConnected && (
@@ -68,8 +42,8 @@ export default function Home() {
                 SignOut
               </button>
             ) : (
-              <button className='btn btn-primary' onClick={signIn}>
-                Connect to {walletName}
+              <button className='btn btn-ghost'>
+                <span className='loading loading-lg' />
               </button>
             )}
           </div>

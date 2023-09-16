@@ -95,7 +95,6 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       this.onSessionConnected(updatedSession)
       this.emit(EVENTS.CONNECTED)
     })
-
     this.client.on('session_delete', () => {
       console.log('EVENT', 'session_delete')
       this.reset()
@@ -178,7 +177,10 @@ export class WalletConnectAdaptor extends WalletAdaptor {
         this.web3Modal.openModal({ uri, standaloneChains })
       }
 
-      const session = await approval()
+      const session = await new Promise<SessionTypes.Struct>((resolve, reject) => {
+        approval().then(s => resolve(s)).catch(e => reject(e))
+        this.web3Modal.subscribeModal((state) => state.open === false && reject())
+      })
       console.log('Established session:', session)
       await this.onSessionConnected(session)
       // Update known pairings after session is connected.

@@ -41,10 +41,14 @@ export class XummAdaptor extends WalletAdaptor {
     })
   }
   signIn = async () => {
-    const result = await this.xumm.authorize()
-    if (result && !(result instanceof Error)) {
-      return true
-    } else {
+    try {
+      const result = await this.xumm.authorize()
+      if (result && !(result instanceof Error)) {
+        return true
+      } else {
+        return false
+      }
+    } catch (e) {
       return false
     }
   }
@@ -58,8 +62,10 @@ export class XummAdaptor extends WalletAdaptor {
     }
   }
   getAddress = async () => {
-    const account = (await this.xumm.user.account) || null
-    return account
+    return new Promise<string | null>((r) => {
+      this.xumm.user.account.then(a => r(a || null))
+      setTimeout(() => r(null), 300)
+    })
   }
   getNetwork = async () => {
     const server = (await this.xumm.user.networkEndpoint)!
