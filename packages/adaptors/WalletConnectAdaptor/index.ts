@@ -182,7 +182,9 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       }
 
       const session = await new Promise<SessionTypes.Struct>((resolve, reject) => {
-        approval().then(s => resolve(s)).catch(e => reject(e))
+        approval()
+          .then((s) => resolve(s))
+          .catch((e) => reject(e))
         this.web3Modal.subscribeModal((state) => state.open === false && reject())
       })
       console.log('Established session:', session)

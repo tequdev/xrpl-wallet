@@ -70,7 +70,7 @@ export class XummAdaptor extends WalletAdaptor {
   }
   getAddress = async () => {
     return new Promise<string | null>((r) => {
-      this.xumm.user.account.then(a => r(a || null))
+      this.xumm.user.account.then((a) => r(a || null))
       setTimeout(() => r(null), 300)
     })
   }

@@ -23,7 +23,7 @@ export default defineConfig({
             return 'import "./index.css";'
           }
           return ''
-        }
+        },
       },
     },
   },

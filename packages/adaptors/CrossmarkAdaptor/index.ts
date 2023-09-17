@@ -13,7 +13,9 @@ export class CrossmarkAdaptor extends WalletAdaptor {
     })
     sdk.on(CrossmarkEVENTS.NETWORK_CHANGE, (network: Network) => this.emit(EVENTS.NETWORK_CHANGED, network))
   }
-  init = async () => { }
+  init = async () => {
+    //
+  }
   isConnected = async () => {
     return sdk.isConnected()
   }
