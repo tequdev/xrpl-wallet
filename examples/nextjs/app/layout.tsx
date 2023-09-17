@@ -35,10 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }, [])
 
   return (
-    <Provider adaptors={adaptors} metadata={walletmetadata}>
-      <html lang='en'>
-        <body className={inter.className}>{children}</body>
-      </html>
-    </Provider>
+    <html lang='en'>
+      <body className={inter.className}>
+        <Provider adaptors={adaptors} metadata={walletmetadata}>
+          {children}
+        </Provider>
+      </body>
+    </html>
   )
 }

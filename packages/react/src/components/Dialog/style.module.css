@@ -1,0 +1,10 @@
+.bg {
+  @apply absolute top-0 left-0 w-full h-full bg-neutral-900 bg-opacity-40;
+}
+
+.dialog {
+  @apply !absolute top-1/2 left-1/2;
+  @apply card w-96 bg-base-100 shadow-xl;
+  @apply !p-4;
+  @apply animate-slide-top;
+}

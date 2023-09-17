@@ -1,11 +1,13 @@
 import { WalletAdaptor } from '@xrpl-wallet/core'
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
 import { useState } from 'react'
+
+import { walletClientContext } from '.'
 
 type ConnectContext = {
   status: 'open' | 'close'
   open: () => void
-  close: () => void
+  close: (prop?: { reset: boolean }) => void
   adaptors: WalletAdaptor[]
 }
 
@@ -17,13 +19,17 @@ type ProviderProps = {
 }
 
 export const ConnectContextProvider = ({ children, adaptors }: ProviderProps) => {
+  const { setWalletClient } = useContext(walletClientContext)
   const [status, setStatus] = useState<ConnectContext['status']>('close')
 
   const open = () => {
     setStatus('open')
   }
 
-  const close = () => {
+  const close = (prop?: { reset: boolean }) => {
+    if (prop?.reset === true) {
+      setWalletClient(null)
+    }
     setStatus('close')
   }
 

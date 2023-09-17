@@ -1,0 +1,27 @@
+.title-box {
+  @apply relative flex justify-center items-center;
+  @apply h-12 my-1;
+}
+.title {
+  @apply items-center text-2xl text-center;
+}
+.close-btn {
+  @apply absolute top-0 right-0;
+  @apply btn btn-circle btn-ghost;
+}
+.close-icon {
+  @apply h-6 w-6;
+}
+
+.container {
+  @apply flex flex-col items-center;
+  @apply mt-4;
+}
+
+.item {
+  @apply btn btn-wide btn-ghost;
+  @apply flex flex-col items-center;
+  @apply mb-2;
+  @apply cursor-pointer;
+  @apply hover:bg-blue-400;
+}
