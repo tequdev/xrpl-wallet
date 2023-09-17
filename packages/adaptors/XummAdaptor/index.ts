@@ -7,11 +7,18 @@ type XummlAdaptorProps = {
 }
 export class XummAdaptor extends WalletAdaptor {
   name = 'Xumm'
+  private apiKey: string
+  private apiSecret?: string
+  // @ts-ignore
   private xumm: Xumm
 
   constructor({ apiKey, apiSecret }: XummlAdaptorProps) {
     super()
-    this.xumm = new Xumm(apiKey, apiSecret)
+    this.apiKey = apiKey
+    this.apiSecret = apiSecret
+  }
+  init = async () => {
+    this.xumm = new Xumm(this.apiKey, this.apiSecret)
     this.xumm.on('success', async () => {
       this.emit(EVENTS.CONNECTED)
       this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)

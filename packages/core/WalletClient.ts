@@ -50,6 +50,10 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     }
   }
 
+  init = async () => {
+    return await this.adaptor.init()
+  }
+
   isConnected = async () => {
     return await this.adaptor.isConnected()
   }
@@ -127,7 +131,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
         } else if (ledger_index > LastLedgerSequence) {
           reject(
             `The latest ledger sequence ${ledger_index} is greater than the transaction's LastLedgerSequence (${LastLedgerSequence}).\n` +
-              `Preliminary result: ${submitResult.engine_result}`,
+            `Preliminary result: ${submitResult.engine_result}`,
           )
         }
       })

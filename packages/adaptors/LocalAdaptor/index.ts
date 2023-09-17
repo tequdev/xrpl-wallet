@@ -12,6 +12,7 @@ export class LocalAdaptor extends WalletAdaptor {
     super()
     this.wallet = Wallet.fromSeed(seed)
   }
+  init = async () => { }
   isConnected = async () => {
     return true
   }

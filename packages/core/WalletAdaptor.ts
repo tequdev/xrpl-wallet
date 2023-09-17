@@ -50,6 +50,7 @@ class xEventsEmitter extends EventEmitter {
 
 interface IWalletAdaptor {
   name: string
+  init: () => Promise<void>
   isConnected: () => Promise<boolean>
   signIn: () => Promise<boolean>
   signOut: () => Promise<boolean>
@@ -61,6 +62,7 @@ interface IWalletAdaptor {
 
 export abstract class WalletAdaptor extends xEventsEmitter implements IWalletAdaptor {
   abstract name: string
+  abstract init: () => Promise<void>
   abstract isConnected: () => Promise<boolean>
   abstract signIn: () => Promise<boolean>
   abstract signOut: () => Promise<boolean>

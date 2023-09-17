@@ -33,12 +33,14 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   private chain: ChainData['id']
   private accounts: string[] = []
   private relayUrl?: string
+  private metadata: Props['metadata']
 
   constructor({ projectId, relayUrl, metadata, network = 'mainnet' }: Props) {
     super()
     this.projectId = projectId
     this.chain = this.parseNetworkToChainId(network)
     this.relayUrl = relayUrl
+    this.metadata = metadata
     this.web3Modal = new Web3Modal({
       projectId: this.projectId,
       themeMode: 'light',
@@ -47,16 +49,6 @@ export class WalletConnectAdaptor extends WalletAdaptor {
         // Bifrost Wallet
         '37a686ab6223cd42e2886ed6e5477fce100a4fb565dcd57ed4f81f7c12e93053',
       ],
-    })
-    Client.init({
-      projectId,
-      logger: DEFAULT_LOGGER,
-      relayUrl: relayUrl,
-      metadata: getAppMetadata() || metadata,
-    }).then((_client) => {
-      this.client = _client
-      this._subscribeToEvents()
-      this._checkPersistedState()
     })
   }
 
@@ -137,6 +129,18 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     }
     const network = await this.getNetwork()
     if (network) this.emit(EVENTS.NETWORK_CHANGED, network)
+  }
+
+  init = async () => {
+    const client = await Client.init({
+      projectId: this.projectId,
+      logger: DEFAULT_LOGGER,
+      relayUrl: this.relayUrl,
+      metadata: getAppMetadata() || this.metadata,
+    })
+    this.client = client
+    this._subscribeToEvents()
+    this._checkPersistedState()
   }
 
   reset = () => {
