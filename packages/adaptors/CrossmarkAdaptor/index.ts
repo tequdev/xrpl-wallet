@@ -1,5 +1,5 @@
 import sdk from '@crossmarkio/sdk'
-import { EVENTS as CrossmarkEVENTS } from '@crossmarkio/sdk/dist/src/typings/extension'
+import { COMMANDS, EVENTS as CrossmarkEVENTS } from '@crossmarkio/sdk/dist/src/typings/extension'
 import { WalletAdaptor, SignOption, TxJson, EVENTS, Network } from '@xrpl-wallet/core'
 
 export class CrossmarkAdaptor extends WalletAdaptor {
@@ -17,7 +17,7 @@ export class CrossmarkAdaptor extends WalletAdaptor {
     //
   }
   isConnected = async () => {
-    return sdk.isConnected()
+    return sdk.isConnected() || false
   }
   signIn = async () => {
     const result = await sdk.signInAndWait()
@@ -41,7 +41,11 @@ export class CrossmarkAdaptor extends WalletAdaptor {
     }
   }
   getAddress = async () => {
-    return sdk.getAddress() || null
+    sdk.signin
+    const response = await sdk.api.awaitRequest({
+      command: COMMANDS.ADDRESS,
+    })
+    return (response.response.data as any).address || null
   }
   getNetwork = async () => {
     const result = sdk.getNetwork()

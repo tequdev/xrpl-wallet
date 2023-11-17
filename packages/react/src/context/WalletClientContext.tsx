@@ -1,5 +1,5 @@
 import { WalletAdaptor, WalletClient } from '@xrpl-wallet/core'
-import { createContext } from 'react'
+import { createContext, useEffect } from 'react'
 import { useState } from 'react'
 
 import { ConnectModal } from '../components/ConnectModal'
@@ -21,6 +21,19 @@ type ProviderProps<T extends WalletAdaptor = WalletAdaptor> = {
 
 export const WalletClientContextProvider = ({ children, adaptors }: ProviderProps) => {
   const [walletClient, setWalletClient] = useState<WalletClient | null>(null)
+
+  useEffect(() => {
+    const promises = adaptors.map(async (adaptor) => {
+      await adaptor.init()
+      return (await adaptor.getAddress()) ? Promise.resolve(adaptor) : Promise.reject(null)
+    })
+    if (promises.length === 0) return
+    Promise.any(promises).then((adaptor) => {
+      if (adaptor) {
+        setWalletClient(new WalletClient(adaptor))
+      }
+    })
+  }, [adaptors])
 
   return (
     <walletClientContext.Provider value={{ walletClient, setWalletClient }}>

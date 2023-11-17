@@ -18,34 +18,34 @@ export class XummAdaptor extends WalletAdaptor {
     this.apiSecret = apiSecret
   }
   init = async () => {
-    this.xumm = new Xumm(this.apiKey, this.apiSecret)
-    this.xumm.on('success', async () => {
-      this.emit(EVENTS.CONNECTED)
-      this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
-      const server = (await this.xumm.user.networkEndpoint)!
-      this.emit(EVENTS.NETWORK_CHANGED, { server })
-    })
-    this.xumm.on('retrieved', async () => {
-      this.emit(EVENTS.CONNECTED)
-      this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
-      const server = (await this.xumm.user.networkEndpoint)!
-      this.emit(EVENTS.NETWORK_CHANGED, { server })
-    })
-    this.xumm.on('loggedout', () => {
-      this.emit(EVENTS.DISCONNECTED)
-      this.emit(EVENTS.ACCOUNT_CHANGED, null)
-    })
-    this.xumm.on('logout', () => {
-      this.emit(EVENTS.DISCONNECTED)
-      this.emit(EVENTS.ACCOUNT_CHANGED, null)
-    })
-  }
-  isConnected = async () => {
+    if (!this.xumm) {
+      this.xumm = new Xumm(this.apiKey, this.apiSecret)
+      this.xumm.on('success', async () => {
+        this.emit(EVENTS.CONNECTED)
+        this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
+        const server = (await this.xumm.user.networkEndpoint)!
+        this.emit(EVENTS.NETWORK_CHANGED, { server })
+      })
+      this.xumm.on('retrieved', async () => {
+        this.emit(EVENTS.CONNECTED)
+        this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
+        const server = (await this.xumm.user.networkEndpoint)!
+        this.emit(EVENTS.NETWORK_CHANGED, { server })
+      })
+      this.xumm.on('loggedout', () => {
+        this.emit(EVENTS.DISCONNECTED)
+        this.emit(EVENTS.ACCOUNT_CHANGED, null)
+      })
+      this.xumm.on('logout', () => {
+        this.emit(EVENTS.DISCONNECTED)
+        this.emit(EVENTS.ACCOUNT_CHANGED, null)
+      })
+    }
     await this.xumm.environment.ready
-    return new Promise<boolean>((r) => {
-      setTimeout(() => r(false), 300)
-      r(!!this.xumm.user.account)
-    })
+  }
+
+  isConnected = async () => {
+    return !!(await this.getAddress())
   }
   signIn = async () => {
     try {
@@ -69,6 +69,7 @@ export class XummAdaptor extends WalletAdaptor {
     }
   }
   getAddress = async () => {
+    await this.xumm.environment.ready
     return new Promise<string | null>((r) => {
       this.xumm.user.account.then((a) => r(a || null))
       setTimeout(() => r(null), 300)

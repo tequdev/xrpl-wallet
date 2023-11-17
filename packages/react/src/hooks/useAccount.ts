@@ -7,6 +7,10 @@ const useAccount = () => {
   const accountRef = useRef<string | null>(null)
   const { walletClient } = useContext(walletClientContext)
   const subscribe = (callback: () => void) => {
+    walletClient?.getAddress().then((address) => {
+      accountRef.current = address
+      callback()
+    })
     const unsubscribeDisconnected = walletClient?.onDisconnected(async () => {
       accountRef.current = null
       callback()
