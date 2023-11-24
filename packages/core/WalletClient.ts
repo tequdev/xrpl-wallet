@@ -1,4 +1,5 @@
-import { AnyJson, XrplClient } from 'xrpl-client'
+import { XrplClient } from 'xrpl-accountlib'
+import { accountAndLedgerSequence, networkTxFee } from 'xrpl-accountlib/dist/utils'
 
 import { EVENTS, Network, SignOption, TxJson, WalletAdaptor } from './WalletAdaptor'
 import { networkEndpoints } from './networks'
@@ -122,7 +123,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     }
     const hash = submitResult.tx_json.hash
     const LastLedgerSequence = submitResult.tx_json.LastLedgerSequence
-    const txResponse = await new Promise<AnyJson>((resolve, reject) => {
+    const txResponse = await new Promise<Record<string, object>>((resolve, reject) => {
       this.xrplClient.on('ledger', async (event) => {
         const ledger_index = event.ledger_index
         const txResponse = await this.xrplClient.send({ command: 'tx', transaction: hash })
@@ -131,7 +132,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
         } else if (ledger_index > LastLedgerSequence) {
           reject(
             `The latest ledger sequence ${ledger_index} is greater than the transaction's LastLedgerSequence (${LastLedgerSequence}).\n` +
-              `Preliminary result: ${submitResult.engine_result}`,
+            `Preliminary result: ${submitResult.engine_result}`,
           )
         }
       })
@@ -143,17 +144,20 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     if (!txjson.Account) {
       txjson.Account = await this.getAddress()
     }
-    if (!txjson.Sequence) {
-      txjson.Sequence = await this.getAccountSequence()
+    const { networkInfo, txValues } = await accountAndLedgerSequence(this.xrplClient, txjson.Account)
+    const { NetworkID, ...values } = txValues
+    if (networkInfo.features.hooks) {
+      return {
+        ...values,
+        ...txjson,
+      }
+    } else {
+      return {
+        ...values,
+        ...txjson,
+        NetworkID,
+      }
     }
-    if (!txjson.LastLedgerSequence) {
-      txjson.LastLedgerSequence = this.getLedgerSequece()
-    }
-    if (!txjson.Fee) {
-      txjson.Fee = this.getFee()
-    }
-    // TODO: NetworkID
-    return txjson
   }
 
   getAccountSequence = async () => {
@@ -169,9 +173,9 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     return (ledger_index as number) + offset
   }
 
-  getFee = () => {
-    const { fee } = this.xrplClient.getState()
-    return String(fee.avg || fee.last || 12)
+  getFee = async (tx: Record<string, object>) => {
+    const fee = await networkTxFee(this.xrplClient, tx)
+    return fee
   }
 
   // --- private ---

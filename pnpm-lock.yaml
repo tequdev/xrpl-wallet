@@ -145,9 +145,12 @@ importers:
 
   packages/core:
     dependencies:
+      xrpl-accountlib:
+        specifier: ^3.0.0
+        version: 3.0.0
       xrpl-client:
-        specifier: 2.1.1
-        version: 2.1.1
+        specifier: 2.2.0
+        version: 2.2.0
     devDependencies:
       '@types/node':
         specifier: ^20.1.1
@@ -274,7 +277,7 @@ packages:
       https-proxy-agent: 5.0.1
       lodash: 4.17.21
       ripple-address-codec: 4.3.1
-      ripple-binary-codec: 1.9.0
+      ripple-binary-codec: 1.10.0
       ripple-keypairs: 1.3.1
       ws: 8.14.2
     transitivePeerDependencies:
@@ -2499,6 +2502,10 @@ packages:
   /big-integer@1.6.51:
     resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
     engines: {node: '>=0.6'}
+    dev: false
+
+  /bignumber.js@5.0.0:
+    resolution: {integrity: sha512-KWTu6ZMVk9sxlDJQh2YH1UOnfDP8O8TpxUxgQG/vKASoSnEjK9aVuOueFaPcQEYQ5fyNXNTOYwYw3099RYebWg==}
     dev: false
 
   /bignumber.js@9.1.1:
@@ -6801,6 +6808,13 @@ packages:
       ripple-address-codec: 4.3.1
     dev: false
 
+  /ripple-secret-codec@1.0.3:
+    resolution: {integrity: sha512-vYcHlJx1p+5uH4ORda2dlvbgCy68m/Ib2kn+Np6PMmRoBenf9pKHa4vzaWmp2SjJKPi1921lQjdeAWoXdm7E0g==}
+    dependencies:
+      base-x: 3.0.9
+      bignumber.js: 5.0.0
+    dev: false
+
   /rollup@3.21.5:
     resolution: {integrity: sha512-a4NTKS4u9PusbUJcfF4IMxuqjFzjm6ifj76P54a7cKnvVzJaG12BLVR+hgU2YDGHzyMMQNxLAZWuALsn8q2oQg==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
@@ -8066,8 +8080,41 @@ packages:
         optional: true
     dev: false
 
-  /xrpl-client@2.1.1:
-    resolution: {integrity: sha512-JKq6bMd50kdjyfrputVq8S7GI8Ttl1AxO7ALA6oRleAhoRfeicGbRjS5IFcL9pgsLIVzVC/7eKAtdhK+lf0ywA==}
+  /xrpl-accountlib@3.0.0:
+    resolution: {integrity: sha512-V4C6tlWTnFGM48JVfokCSH/sI+0ms9lsTck8V6DqC7D5OZ8d9T+GfXPJJqnCnce4kXRbANJWsiMA22i8DphHZg==}
+    dependencies:
+      assert: 2.1.0
+      bip32: 2.0.6
+      bip39: 3.1.0
+      bn.js: 5.2.1
+      elliptic: 6.5.4
+      hash.js: 1.1.7
+      lodash: 4.17.21
+      ripple-address-codec: 4.3.1
+      ripple-binary-codec: /xrpl-binary-codec-prerelease@5.0.2
+      ripple-keypairs: 1.3.1
+      ripple-secret-codec: 1.0.3
+      xrpl-client: 2.2.0
+      xrpl-secret-numbers: 0.3.4
+      xrpl-sign-keypairs: 2.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /xrpl-binary-codec-prerelease@5.0.2:
+    resolution: {integrity: sha512-bKxrHKZyWZF3V8/o9BTJbtm7EUVMY9/IkXkSM1LHNZqaB5+t2OOjDneCYY5j0BbDdlxNomPafcSjLWVf7sJpuw==}
+    engines: {node: '>= 10'}
+    dependencies:
+      assert: 2.1.0
+      big-integer: 1.6.51
+      buffer: 6.0.3
+      create-hash: 1.2.0
+      decimal.js: 10.4.3
+      ripple-address-codec: 4.3.1
+    dev: false
+
+  /xrpl-client@2.2.0:
+    resolution: {integrity: sha512-lHblRPbtUKiQ+6cBjvIt4FeUvnhuOp4A0/v51PyxO2oPgEjFOUTE9Dw63/z9t+JiOtVn1o5Z46XjhXq9czbuBg==}
     dependencies:
       debug: 4.3.4
       websocket: 1.0.34
@@ -8080,6 +8127,15 @@ packages:
     dependencies:
       '@types/brorand': 1.0.33
       brorand: 1.1.0
+      ripple-keypairs: 1.3.1
+    dev: false
+
+  /xrpl-sign-keypairs@2.2.1:
+    resolution: {integrity: sha512-H5sJqWqTZxmc3vJSqOqkobFJgHGXs82qr80+9SDM/xwpvOfzAxIpe8yxsR1CaovyO0oq1wsALbJNpRc7MugpfA==}
+    dependencies:
+      big-integer: 1.6.51
+      ripple-address-codec: 4.3.1
+      ripple-binary-codec: /xrpl-binary-codec-prerelease@5.0.2
       ripple-keypairs: 1.3.1
     dev: false
 
