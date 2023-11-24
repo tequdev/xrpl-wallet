@@ -132,7 +132,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
         } else if (ledger_index > LastLedgerSequence) {
           reject(
             `The latest ledger sequence ${ledger_index} is greater than the transaction's LastLedgerSequence (${LastLedgerSequence}).\n` +
-            `Preliminary result: ${submitResult.engine_result}`,
+              `Preliminary result: ${submitResult.engine_result}`,
           )
         }
       })
