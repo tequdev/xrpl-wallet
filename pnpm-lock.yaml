@@ -127,11 +127,11 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       xrpl:
-        specifier: ^2.7.0
-        version: 2.7.0
+        specifier: ^2.14.0
+        version: 2.14.0
       xumm:
-        specifier: ^1.5.5
-        version: 1.5.5
+        specifier: ^1.6.6
+        version: 1.6.6
     devDependencies:
       '@types/node':
         specifier: ^20.1.1
@@ -256,7 +256,7 @@ packages:
     dependencies:
       '@transia/xrpl': 2.7.3-alpha.19
       node-forge: 1.3.1
-      xrpl: 2.13.0
+      xrpl: 2.14.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -278,7 +278,7 @@ packages:
       lodash: 4.17.21
       node-forge: 1.3.1
       webextension-polyfill: 0.10.0
-      xrpl: 2.13.0
+      xrpl: 2.14.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -1851,7 +1851,7 @@ packages:
   /@types/websocket@1.0.5:
     resolution: {integrity: sha512-NbsqiNX9CnEfC1Z0Vf4mE1SgAJ07JnRYcNex7AJ9zAVzmiGHmjKFEk7O4TJIsgv2B1sLEb6owKFZrACwdYngsQ==}
     dependencies:
-      '@types/node': 20.1.1
+      '@types/node': 20.9.0
     dev: false
 
   /@typescript-eslint/eslint-plugin@6.0.0(@typescript-eslint/parser@6.0.0)(eslint@8.45.0)(typescript@5.2.2):
@@ -2592,10 +2592,6 @@ packages:
     resolution: {integrity: sha512-KWTu6ZMVk9sxlDJQh2YH1UOnfDP8O8TpxUxgQG/vKASoSnEjK9aVuOueFaPcQEYQ5fyNXNTOYwYw3099RYebWg==}
     dev: false
 
-  /bignumber.js@9.1.1:
-    resolution: {integrity: sha512-pHm4LsMJ6lzgNGVfZHjMoO8sdoRhOzOH4MLmY65Jg70bpxCKu5iOHNJyfF6OyvYw7t8Fpf35RuzUyqnQsj8Vig==}
-    dev: false
-
   /bignumber.js@9.1.2:
     resolution: {integrity: sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==}
     dev: false
@@ -3199,10 +3195,6 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
-
-  /crypto-js@4.1.1:
-    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
-    dev: false
 
   /crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
@@ -6915,14 +6907,6 @@ packages:
       inherits: 2.0.4
     dev: false
 
-  /ripple-address-codec@4.2.5:
-    resolution: {integrity: sha512-SZ96zZH+0REeyEcYVFl0vqcsGRXiFXS2RUgHupHhtVkOEk6men53vngVjJwBrSnY+oa6Cri15q1zSni3DEoxNw==}
-    engines: {node: '>= 10'}
-    dependencies:
-      base-x: 3.0.9
-      create-hash: 1.2.0
-    dev: false
-
   /ripple-address-codec@4.3.0:
     resolution: {integrity: sha512-Tvd81i7hpDmNqHvkj6iYlj8Tv3I1Romw5gfjni9eacewJvGV2xe+p2y0FAw39z72qfciRMhQyHvpnviBcWVBNw==}
     engines: {node: '>= 10'}
@@ -6939,8 +6923,8 @@ packages:
       create-hash: 1.2.0
     dev: false
 
-  /ripple-binary-codec@1.10.0:
-    resolution: {integrity: sha512-qWXxubgXBV3h5NTaaLiusZ1FhPqSy+bCYHHarfZ3bMmO2alRa1Ox61jvX1Zyozok8PcF3gs3bKwZci4RTlA07w==}
+  /ripple-binary-codec@1.11.0:
+    resolution: {integrity: sha512-g7+gs3T+NfoeW6vIq5dcN0CkIT4t/zwRzFxz8X2RzfbrWRnewPUKqQbmBgs05tXLX5NuWPaneiaAVpFpYBcdfw==}
     engines: {node: '>= 10'}
     dependencies:
       assert: 2.1.0
@@ -6961,17 +6945,6 @@ packages:
       create-hash: 1.2.0
       decimal.js: 10.4.3
       ripple-address-codec: 4.3.0
-    dev: false
-
-  /ripple-keypairs@1.1.5:
-    resolution: {integrity: sha512-wLJXIBsMVazn2Yp/7oP4PvgA4Gd1HtuZLftdEJFNOLgraf82phqa2AnNK3t9f3XeQnApW1jAe/FcFFOY6QUn5w==}
-    engines: {node: '>= 10'}
-    dependencies:
-      bn.js: 5.2.1
-      brorand: 1.1.0
-      elliptic: 6.5.4
-      hash.js: 1.1.7
-      ripple-address-codec: 4.2.5
     dev: false
 
   /ripple-keypairs@1.3.1:
@@ -8258,19 +8231,6 @@ packages:
         optional: true
     dev: false
 
-  /ws@8.13.0:
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: false
-
   /ws@8.14.2:
     resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
     engines: {node: '>=10.0.0'}
@@ -8343,8 +8303,8 @@ packages:
       ripple-keypairs: 1.3.1
     dev: false
 
-  /xrpl@2.13.0:
-    resolution: {integrity: sha512-jIu9PuG3g+2NZQT8oGmOL3LFkH6Pp+OHS1FNbozEJkajuHAuoCEe2vVddjD8ME81kgV+xRFnXJ+EUbmQDdh/Xg==}
+  /xrpl@2.14.0:
+    resolution: {integrity: sha512-HOHP9RJfFGqOAZYeL6A0aC8Ffx2f9IjnZNfgYpjBaWMPsWpj/CegRbJDxtBJrHVNBODR5rGzqsLDhNvilsqBbA==}
     engines: {node: '>=10.13.0'}
     dependencies:
       bignumber.js: 9.1.2
@@ -8353,29 +8313,10 @@ packages:
       https-proxy-agent: 5.0.1
       lodash: 4.17.21
       ripple-address-codec: 4.3.1
-      ripple-binary-codec: 1.10.0
+      ripple-binary-codec: 1.11.0
       ripple-keypairs: 1.3.1
       ws: 8.14.2
       xrpl-secret-numbers: 0.3.4
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /xrpl@2.7.0:
-    resolution: {integrity: sha512-P4M/Myxn2U7wl1avAG2Y/JuJMlKw2boLNx0f9woYQJLrS68sICmAfGOYKqPSzwRPc9P7kmydNrk+737nmFW5Vw==}
-    engines: {node: '>=10.13.0'}
-    dependencies:
-      bignumber.js: 9.1.1
-      bip32: 2.0.6
-      bip39: 3.1.0
-      https-proxy-agent: 5.0.1
-      lodash: 4.17.21
-      ripple-address-codec: 4.2.5
-      ripple-binary-codec: 1.9.0
-      ripple-keypairs: 1.1.5
-      ws: 8.13.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -8387,30 +8328,30 @@ packages:
     engines: {node: '>=0.4'}
     dev: true
 
-  /xumm-js-pkce@1.0.0:
-    resolution: {integrity: sha512-qLBbNgQzMUu5sv61xckFe0qqWwq1wyQkTa0in+8T7TUN+O1NB0ii3ewOuAV3o4nvHqLz4tjbP63LuU7o916cpg==}
+  /xumm-js-pkce@1.0.2:
+    resolution: {integrity: sha512-hcadf2mHYBd6vCaKtQhcLJJjoG+1XIIbh2mq+QthheoRHAf3k/gqQNDnVqJnANTK7NBKo7GJWnY2yCkYj/AQzQ==}
     dependencies:
-      crypto-js: 4.1.1
+      crypto-js: 4.2.0
     dev: false
 
-  /xumm-oauth2-pkce@2.8.2:
-    resolution: {integrity: sha512-9TrwGCDQt0AIjhJka9Dbhte//SiFAGVLzNfFGn5x6vz+YP4QikvuC1X1R3XTgNaYuL8+h3V8gLo3dCGTVizGbg==}
+  /xumm-oauth2-pkce@2.8.3:
+    resolution: {integrity: sha512-zHhxv4eN3GrUpsHIvQG9ou4U5iemdxFxL15++UK5c20mrU1kvAjvf/Vhx1ZQ+qLydI/7qaEEwwRUwCE6ZyplPQ==}
     dependencies:
       debug: 4.3.4
       events: 3.3.0
-      xumm-js-pkce: 1.0.0
-      xumm-sdk: 1.8.6
+      xumm-js-pkce: 1.0.2
+      xumm-sdk: 1.9.2
     transitivePeerDependencies:
       - encoding
       - supports-color
     dev: false
 
-  /xumm-sdk@1.8.6:
-    resolution: {integrity: sha512-qFBHE6ZuxV5HvJuZGnrzyTrPpol2xiaVhQG44Lm1h0xOTS/AK2RV/pfCgyNoXf+hw/zTzlVuuXF7RnlwEDmyeg==}
+  /xumm-sdk@1.9.2:
+    resolution: {integrity: sha512-h/IkchVGm0D5haOecsap9UCxwRDfdof3CaxbuXohGseocSoFpFA4ItNKRN2TDYVypy0MA4WSvskOFg51wGqRqg==}
     dependencies:
       '@types/websocket': 1.0.5
-      assert: 2.0.0
-      bignumber.js: 9.1.1
+      assert: 2.1.0
+      bignumber.js: 9.1.2
       buffer: 6.0.3
       debug: 4.3.4
       events: 3.3.0
@@ -8432,16 +8373,16 @@ packages:
       - supports-color
     dev: false
 
-  /xumm@1.5.5:
-    resolution: {integrity: sha512-TgezauzZbpkxtS4STu4+u6OOF9t50UhzR5rAlZ4zlTIhkzAijkJxqx/PCslZ3bSbnOPFK/5BMeDv/22B9tjUyw==}
-    engines: {node: '>=14', npm: '>=7 <=9'}
+  /xumm@1.6.6:
+    resolution: {integrity: sha512-JM6qJlR7fL1Wm3Hb4JQOjv4EU6at8h/vnX6wZ4ohHIlGC/mk68PYZ2hmkTHqnhTM2ubh48Fb7gl7e3cxb0a3ZQ==}
+    engines: {node: '>=14', npm: '>=7 <=10'}
     dependencies:
       buffer: 6.0.3
       events: 3.3.0
       nodemon: 2.0.22
-      xumm-js-pkce: 1.0.0
-      xumm-oauth2-pkce: 2.8.2
-      xumm-sdk: 1.8.6
+      xumm-js-pkce: 1.0.2
+      xumm-oauth2-pkce: 2.8.3
+      xumm-sdk: 1.9.2
       xumm-xapp-sdk: 1.6.4
     transitivePeerDependencies:
       - encoding

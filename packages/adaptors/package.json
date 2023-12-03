@@ -42,8 +42,8 @@
     "@web3modal/standalone": "^2.4.3",
     "@xrpl-walletconnect/core": "^0.1.0",
     "ripple-binary-codec": "^1.9.0",
-    "xrpl": "^2.7.0",
-    "xumm": "^1.5.5"
+    "xrpl": "^2.14.0",
+    "xumm": "^1.6.6"
   },
   "publishConfig": {
     "access": "public"
