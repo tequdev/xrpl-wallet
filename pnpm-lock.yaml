@@ -105,6 +105,9 @@ importers:
       '@crossmarkio/sdk':
         specifier: 0.3.5-beta
         version: 0.3.5-beta
+      '@crossmarkio/typings':
+        specifier: 0.0.1-beta
+        version: 0.0.1-beta
       '@walletconnect/sign-client':
         specifier: ^2.10.0
         version: 2.10.0

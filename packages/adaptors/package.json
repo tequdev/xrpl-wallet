@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@crossmarkio/sdk": "0.3.5-beta",
+    "@crossmarkio/typings": "0.0.1-beta",
     "@walletconnect/sign-client": "^2.10.0",
     "@walletconnect/types": "^2.10.0",
     "@walletconnect/utils": "^2.10.0",

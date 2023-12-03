@@ -1,6 +1,9 @@
 import sdk from '@crossmarkio/sdk'
-import { COMMANDS, EVENTS as CrossmarkEVENTS } from '@crossmarkio/sdk/dist/src/typings/extension'
+import typings from '@crossmarkio/typings'
 import { WalletAdaptor, SignOption, TxJson, EVENTS, Network } from '@xrpl-wallet/core'
+
+const CrossmarkEVENTS = typings.extension.Extension.EVENTS
+const COMMANDS = typings.extension.Extension.COMMANDS
 
 export class CrossmarkAdaptor extends WalletAdaptor {
   name = 'CROSSMARK'
@@ -41,7 +44,6 @@ export class CrossmarkAdaptor extends WalletAdaptor {
     }
   }
   getAddress = async () => {
-    sdk.signin
     const response = await sdk.api.awaitRequest({
       command: COMMANDS.ADDRESS,
     })
