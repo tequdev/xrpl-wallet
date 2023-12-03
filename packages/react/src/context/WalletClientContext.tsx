@@ -11,6 +11,7 @@ type WalletClientContext = {
   setWalletClient: (walletClient: WalletClient | null) => void
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const walletClientContext = createContext({} as WalletClientContext)
 
 type ProviderProps<T extends WalletAdaptor = WalletAdaptor> = {

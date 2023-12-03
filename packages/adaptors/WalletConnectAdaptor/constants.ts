@@ -8,4 +8,4 @@ export enum DEFAULT_XRPL_METHODS {
   XRPL_SIGN_TRANSACTION_FOR = 'xrpl_signTransactionFor',
 }
 
-export enum DEFAULT_XRPL_EVENTS { }
+export enum DEFAULT_XRPL_EVENTS {}

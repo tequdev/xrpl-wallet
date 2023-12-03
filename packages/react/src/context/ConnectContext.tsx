@@ -11,6 +11,7 @@ type ConnectContext = {
   adaptors: WalletAdaptor[]
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const connectContext = createContext({} as ConnectContext)
 
 type ProviderProps = {
