@@ -2,9 +2,7 @@
 import './globals.css'
 import { CrossmarkAdaptor, WalletConnectAdaptor, XummAdaptor } from '@xrpl-wallet/adaptors'
 // import type { Metadata } from 'next'
-import { WalletAdaptor } from '@xrpl-wallet/core'
 import { Inter } from 'next/font/google'
-import { useEffect, useState } from 'react'
 
 import Provider from './Provider'
 
@@ -21,23 +19,18 @@ const walletmetadata = [
   { adaptor: 'walletconnect', props: { title: 'WalletConnect' } },
 ]
 
+const xumm = new XummAdaptor({ apiKey: '7fcb00b9-b846-4ddf-ae02-2a94f18c0b2f' })
+const crossmark = new CrossmarkAdaptor()
+const walletconnect = new WalletConnectAdaptor({
+  projectId: '85ad846d8aa771cd56c2bbbf30f7a183',
+  network: 'testnet',
+})
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [adaptors, setAdaptors] = useState<WalletAdaptor[]>([])
-
-  useEffect(() => {
-    const xumm = new XummAdaptor({ apiKey: '7fcb00b9-b846-4ddf-ae02-2a94f18c0b2f' })
-    const crossmark = new CrossmarkAdaptor()
-    const walletconnect = new WalletConnectAdaptor({
-      projectId: '85ad846d8aa771cd56c2bbbf30f7a183',
-      network: 'testnet',
-    })
-    setAdaptors([xumm, crossmark, walletconnect])
-  }, [])
-
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <Provider adaptors={adaptors} metadata={walletmetadata}>
+        <Provider adaptors={[xumm, crossmark, walletconnect]} metadata={walletmetadata}>
           {children}
         </Provider>
       </body>

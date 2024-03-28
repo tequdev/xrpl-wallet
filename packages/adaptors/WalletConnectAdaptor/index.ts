@@ -27,7 +27,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   name = 'WalletConnect'
   private projectId: string
   private web3Modal: Web3Modal
-  private client: Client = new Client()
+  private client: Client
   private pairing: PairingTypes.Struct[] = []
   private session: SessionTypes.Struct | undefined
   private chain: ChainData['id']
@@ -41,6 +41,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     this.chain = this.parseNetworkToChainId(network)
     this.relayUrl = relayUrl
     this.metadata = metadata
+    this.client = new Client()
     this.web3Modal = new Web3Modal({
       projectId: this.projectId,
       themeMode: 'light',

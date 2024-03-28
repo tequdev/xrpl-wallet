@@ -1,47 +1,43 @@
 import { EVENTS, SignOption, TxJson, WalletAdaptor } from '@xrpl-wallet/core'
-import { Xumm } from 'xumm'
+import { XummPkce } from 'xumm-oauth2-pkce'
 
 type XummlAdaptorProps = {
   apiKey: string
-  apiSecret?: string
 }
 export class XummAdaptor extends WalletAdaptor {
   name = 'Xumm'
   private apiKey: string
-  private apiSecret?: string
   // @ts-ignore
-  private xumm: Xumm
+  private xummPkce: XummPkce
 
-  constructor({ apiKey, apiSecret }: XummlAdaptorProps) {
+  constructor({ apiKey }: XummlAdaptorProps) {
     super()
     this.apiKey = apiKey
-    this.apiSecret = apiSecret
   }
   init = async () => {
-    if (!this.xumm) {
-      this.xumm = new Xumm(this.apiKey, this.apiSecret)
-      this.xumm.on('success', async () => {
+    if (!this.xummPkce) {
+      this.xummPkce = new XummPkce(this.apiKey)
+      this.xummPkce.on('success', async () => {
         this.emit(EVENTS.CONNECTED)
-        this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
-        const server = (await this.xumm.user.networkEndpoint)!
-        this.emit(EVENTS.NETWORK_CHANGED, { server })
+        const s = await this.xummPkce.state()
+        this.emit(EVENTS.ACCOUNT_CHANGED, s?.me.account || null)
       })
-      this.xumm.on('retrieved', async () => {
+      this.xummPkce.on('retrieved', async () => {
         this.emit(EVENTS.CONNECTED)
-        this.emit(EVENTS.ACCOUNT_CHANGED, (await this.xumm.user.account) || null)
-        const server = (await this.xumm.user.networkEndpoint)!
-        this.emit(EVENTS.NETWORK_CHANGED, { server })
+        const s = await this.xummPkce.state()
+        this.emit(EVENTS.ACCOUNT_CHANGED, s?.me.account || null)
       })
-      this.xumm.on('loggedout', () => {
-        this.emit(EVENTS.DISCONNECTED)
-        this.emit(EVENTS.ACCOUNT_CHANGED, null)
-      })
-      this.xumm.on('logout', () => {
+      this.xummPkce.on('loggedout', () => {
         this.emit(EVENTS.DISCONNECTED)
         this.emit(EVENTS.ACCOUNT_CHANGED, null)
       })
     }
-    await this.xumm.environment.ready
+
+    await new Promise<void>((resolve) => {
+      this.xummPkce.on("retrieved", resolve)
+      this.xummPkce.on("success", resolve)
+      this.xummPkce.on("error", (_data) => resolve())
+    })
   }
 
   isConnected = async () => {
@@ -49,7 +45,7 @@ export class XummAdaptor extends WalletAdaptor {
   }
   signIn = async () => {
     try {
-      const result = await this.xumm.authorize()
+      const result = await this.xummPkce.authorize()
       if (result && !(result instanceof Error)) {
         return true
       } else {
@@ -61,7 +57,7 @@ export class XummAdaptor extends WalletAdaptor {
   }
   signOut = async () => {
     try {
-      await this.xumm.logout()
+      await this.xummPkce.logout()
       return true
     } catch (e) {
       console.error(e)
@@ -69,25 +65,23 @@ export class XummAdaptor extends WalletAdaptor {
     }
   }
   getAddress = async () => {
-    await this.xumm.environment.ready
-    return new Promise<string | null>((r) => {
-      this.xumm.user.account.then((a) => r(a || null))
-      setTimeout(() => r(null), 300)
-    })
+    const s = await this.xummPkce.state()
+    return s?.me.account || null
   }
   getNetwork = async () => {
-    const server = (await this.xumm.user.networkEndpoint)!
-    return { server }
+    return null
   }
   sign = async (txjson: Record<string, any>, _option?: SignOption) => {
-    const result = await this.xumm.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: false } })
+    const sdk = (await this.xummPkce.state())?.sdk
+    const result = await sdk?.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: false } })
     if (!result) return null
     const hash = result.payload.response.txid!
     const tx_blob = result.payload.response.hex!
     return { tx_blob, hash }
   }
   signAndSubmit = async (txjson: TxJson, _option?: SignOption | undefined) => {
-    const result = await this.xumm.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: true } })
+    const sdk = (await this.xummPkce.state())?.sdk
+    const result = await sdk?.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: true } })
     if (!result) return null
     return { tx_json: result.payload.payload.request_json as Record<string, any> }
   }
