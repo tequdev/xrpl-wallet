@@ -31,13 +31,14 @@ export class XummAdaptor extends WalletAdaptor {
         this.emit(EVENTS.DISCONNECTED)
         this.emit(EVENTS.ACCOUNT_CHANGED, null)
       })
-    }
 
-    await new Promise<void>((resolve) => {
-      this.xummPkce.on("retrieved", resolve)
-      this.xummPkce.on("success", resolve)
-      this.xummPkce.on("error", (_data) => resolve())
-    })
+      await new Promise<void>((resolve) => {
+        this.xummPkce.on("retrieved", resolve)
+        this.xummPkce.on("success", resolve)
+        this.xummPkce.on("error", (_data) => resolve())
+        this.xummPkce.on("loggedout", resolve)
+      })
+    }
   }
 
   isConnected = async () => {
