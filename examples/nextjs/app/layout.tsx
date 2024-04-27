@@ -23,7 +23,7 @@ const xumm = new XummAdaptor({ apiKey: '7fcb00b9-b846-4ddf-ae02-2a94f18c0b2f' })
 const crossmark = new CrossmarkAdaptor()
 const walletconnect = new WalletConnectAdaptor({
   projectId: '85ad846d8aa771cd56c2bbbf30f7a183',
-  network: 'testnet',
+  networks: ['testnet'],
 })
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

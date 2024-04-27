@@ -1,25 +1,14 @@
 import { XrplClient } from 'xrpl-accountlib'
 import { accountAndLedgerSequence, networkTxFee } from 'xrpl-accountlib/dist/utils'
 
-import { EVENTS, Network, SignOption, TxJson, WalletAdaptor } from './WalletAdaptor'
-import { networkEndpoints } from './networks'
+import { EVENTS, SignOption, TxJson, WalletAdaptor } from './WalletAdaptor'
 
 export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
   walletName: string
   // @ts-ignore
   xrplClient: XrplClient
-  private network: Network
-
-  constructor(
-    private readonly adaptor: T,
-    network: Network = { server: 'mainnet' },
-  ) {
+  constructor(private readonly adaptor: T,) {
     this.walletName = adaptor.name
-    this.network = network
-    this.changeNetwork(network)
-    this.adaptor.on(EVENTS.NETWORK_CHANGED, (network: Network) => {
-      this.changeNetwork(network)
-    })
   }
 
   // events
@@ -27,13 +16,6 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
     this.adaptor.on(EVENTS.ACCOUNT_CHANGED, listener)
     return () => {
       this.adaptor.off(EVENTS.ACCOUNT_CHANGED, listener)
-    }
-  }
-
-  onNetworkChange = (listener: (network: Network) => void) => {
-    this.adaptor.on(EVENTS.NETWORK_CHANGED, listener)
-    return () => {
-      this.adaptor.off(EVENTS.NETWORK_CHANGED, listener)
     }
   }
 
@@ -81,20 +63,6 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
   }
 
   /**
-   * Get Network wallet connected
-   */
-  getNetwork = async () => {
-    const network = await this.adaptor.getNetwork()
-    if (network) {
-      this.network = network
-      this.changeNetwork(network)
-    } else {
-      // TODO: throw error
-    }
-    return network
-  }
-
-  /**
    * Sign Transaction
    * option: autofill (default: true)
    */
@@ -132,7 +100,7 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
         } else if (ledger_index > LastLedgerSequence) {
           reject(
             `The latest ledger sequence ${ledger_index} is greater than the transaction's LastLedgerSequence (${LastLedgerSequence}).\n` +
-              `Preliminary result: ${submitResult.engine_result}`,
+            `Preliminary result: ${submitResult.engine_result}`,
           )
         }
       })
@@ -153,9 +121,9 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
       }
     } else {
       return {
+        NetworkID,
         ...values,
         ...txjson,
-        NetworkID,
       }
     }
   }
@@ -176,18 +144,5 @@ export class WalletClient<T extends WalletAdaptor = WalletAdaptor> {
   getFee = async (tx: Record<string, object>) => {
     const fee = await networkTxFee(this.xrplClient, tx)
     return fee
-  }
-
-  // --- private ---
-  /**
-   * Change Network
-   */
-  private changeNetwork = (network: Network) => {
-    if (typeof network.server === 'string' && networkEndpoints.hasOwnProperty(network.server)) {
-      // @ts-ignore
-      this.xrplClient = new XrplClient(networkEndpoints[network.server])
-    } else {
-      this.xrplClient = new XrplClient(network.server)
-    }
   }
 }

@@ -1,6 +1,6 @@
 import sdk from '@crossmarkio/sdk'
 import typings from '@crossmarkio/typings'
-import { WalletAdaptor, SignOption, TxJson, EVENTS, Network } from '@xrpl-wallet/core'
+import { WalletAdaptor, SignOption, TxJson, EVENTS } from '@xrpl-wallet/core'
 
 const CrossmarkEVENTS = typings.extension.Extension.EVENTS
 const COMMANDS = typings.extension.Extension.COMMANDS
@@ -14,7 +14,6 @@ export class CrossmarkAdaptor extends WalletAdaptor {
       const address = sdk.getAddress() || null
       this.emit(EVENTS.ACCOUNT_CHANGED, address)
     })
-    sdk.on(CrossmarkEVENTS.NETWORK_CHANGE, (network: Network) => this.emit(EVENTS.NETWORK_CHANGED, network))
   }
   init = async () => {
     //
@@ -26,10 +25,6 @@ export class CrossmarkAdaptor extends WalletAdaptor {
     const result = await sdk.signInAndWait()
     if (!result.response.data.address) return false
     this.emit(EVENTS.CONNECTED)
-    const network = await this.getNetwork()
-    if (network) {
-      this.emit(EVENTS.NETWORK_CHANGED, { server: network.server })
-    }
     return true
   }
   signOut = async () => {
@@ -48,11 +43,6 @@ export class CrossmarkAdaptor extends WalletAdaptor {
       command: COMMANDS.ADDRESS,
     })
     return (response.response.data as any).address || null
-  }
-  getNetwork = async () => {
-    const result = sdk.getNetwork()
-    if (!result) return null
-    return { network: result.type, server: result.wss }
   }
   sign = async (txjson: Record<string, any>, _option?: SignOption) => {
     const result = await sdk.signAndWait(txjson)

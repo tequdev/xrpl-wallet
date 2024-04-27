@@ -69,9 +69,6 @@ export class XummAdaptor extends WalletAdaptor {
     const s = await this.xummPkce.state()
     return s?.me.account || null
   }
-  getNetwork = async () => {
-    return null
-  }
   sign = async (txjson: Record<string, any>, _option?: SignOption) => {
     const sdk = (await this.xummPkce.state())?.sdk
     const result = await sdk?.payload?.createAndSubscribe({ txjson: txjson as any, options: { submit: false } })

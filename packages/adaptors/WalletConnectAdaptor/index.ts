@@ -20,7 +20,7 @@ type Props = {
     verifyUrl?: string
   }
   /** default: mainnet */
-  network?: 'mainnet' | 'testnet' | 'devnet' | number
+  networks?: ('mainnet' | 'testnet' | 'devnet' | number)[]
 }
 
 export class WalletConnectAdaptor extends WalletAdaptor {
@@ -30,15 +30,15 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   private client: Client
   private pairing: PairingTypes.Struct[] = []
   private session: SessionTypes.Struct | undefined
-  private chain: ChainData['id']
+  private chains: ChainData['id'][]
   private accounts: string[] = []
   private relayUrl?: string
   private metadata: Props['metadata']
 
-  constructor({ projectId, relayUrl, metadata, network = 'mainnet' }: Props) {
+  constructor({ projectId, relayUrl, metadata, networks = ['mainnet'] }: Props) {
     super()
     this.projectId = projectId
-    this.chain = this.parseNetworkToChainId(network)
+    this.chains = networks.map((network) => this.parseNetworkToChainId(network))
     this.relayUrl = relayUrl
     this.metadata = metadata
     this.client = new Client()
@@ -121,15 +121,13 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     const allNamespaceChains = Object.keys(_session.namespaces).flatMap((ns) => _session.namespaces[ns].chains || [])
 
     this.session = _session
-    this.chain = allNamespaceChains[0]
+    this.chains = allNamespaceChains
     this.accounts = [...new Set(allNamespaceAccounts)]
     if (this.accounts.length) {
       this.emit(EVENTS.ACCOUNT_CHANGED, await this.getAddress())
     } else {
       this.emit(EVENTS.ACCOUNT_CHANGED, null)
     }
-    const network = await this.getNetwork()
-    if (network) this.emit(EVENTS.NETWORK_CHANGED, network)
   }
 
   init = async () => {
@@ -147,7 +145,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   reset = () => {
     this.session = undefined
     this.accounts = []
-    this.chain = this.chain
+    this.chains = this.chains
     this.relayUrl
     // this.relayUrl = relayUrl;
   }
@@ -162,8 +160,8 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     }
     console.log('connect, pairing topic is:', this.pairing[0]?.topic)
     try {
-      const requiredNamespaces = getRequiredNamespaces([this.chain])
-      const optionalNamespaces = getOptionalNamespaces([this.chain])
+      const requiredNamespaces = getRequiredNamespaces(this.chains)
+      const optionalNamespaces = getOptionalNamespaces(this.chains)
       console.log('requiredNamespaces config for connect:', requiredNamespaces)
 
       const { uri, approval } = await this.client.connect({
@@ -193,10 +191,6 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       // Update known pairings after session is connected.
       this.pairing = this.client.pairing.getAll({ active: true })
       this.emit(EVENTS.CONNECTED)
-      const network = await this.getNetwork()
-      if (network) {
-        this.emit(EVENTS.NETWORK_CHANGED, network)
-      }
       return true
     } catch (e) {
       console.error(e)
@@ -237,17 +231,16 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     return this.accounts[0].split(':')[2]
   }
 
-  getNetwork = async () => {
-    const networkId = this.chain.split(':')[1]
-    if (networkId === '0') return { server: 'mainnet' }
-    if (networkId === '1') return { server: 'testnet' }
-    if (networkId === '2') return { server: 'devnet' }
-    return null
-  }
-
   sign = async (txjson: Record<string, any>, option?: SignOption) => {
+    let chainId = this.chains[0] // TODO: which is the default chain?
+    if (typeof txjson.NetworkID === 'number') {
+      chainId = this.parseNetworkToChainId(txjson.NetworkID)
+      if (txjson.NetworkID < 1024) {
+        delete txjson.NetworkID
+      }
+    }
     const result = await this.client!.request<{ tx_json: Record<string, any> }>({
-      chainId: this.chain,
+      chainId,
       topic: this.session!.topic,
       request: {
         method: DEFAULT_XRPL_METHODS.XRPL_SIGN_TRANSACTION,
@@ -264,8 +257,15 @@ export class WalletConnectAdaptor extends WalletAdaptor {
   }
 
   signAndSubmit = async (txjson: TxJson, option?: SignOption) => {
+    let chainId = this.chains[0] // TODO: which is the default chain?
+    if (typeof txjson.NetworkID === 'number') {
+      chainId = this.parseNetworkToChainId(txjson.NetworkID)
+      if (txjson.NetworkID < 1024) {
+        delete txjson.NetworkID
+      }
+    }
     const result = await this.client!.request<{ tx_json: Record<string, any> }>({
-      chainId: this.chain,
+      chainId,
       topic: this.session!.topic,
       request: {
         method: DEFAULT_XRPL_METHODS.XRPL_SIGN_TRANSACTION,

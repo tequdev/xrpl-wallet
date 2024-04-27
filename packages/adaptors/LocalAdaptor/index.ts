@@ -27,9 +27,6 @@ export class LocalAdaptor extends WalletAdaptor {
   getAddress = async () => {
     return new Promise<string>((resolve) => resolve(this.wallet.address))
   }
-  getNetwork = async () => {
-    return null
-  }
   sign = async (txjson: Record<string, any>, _option?: SignOption) => {
     validate(txjson)
     return Promise.resolve(this.wallet.sign(txjson as any))
