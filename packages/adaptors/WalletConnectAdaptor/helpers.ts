@@ -43,7 +43,7 @@ const getSupportedEventsByNamespace = (namespace: string) => {
 
 export const getRequiredNamespaces = (chains: string[]): ProposalTypes.RequiredNamespaces => {
   const selectedNamespaces = getNamespacesFromChains(chains)
-  console.log('selected required namespaces:', selectedNamespaces)
+  console.debug('selected required namespaces:', selectedNamespaces)
 
   return Object.fromEntries(
     selectedNamespaces.map((namespace) => [
@@ -59,7 +59,7 @@ export const getRequiredNamespaces = (chains: string[]): ProposalTypes.RequiredN
 
 export const getOptionalNamespaces = (chains: string[]): ProposalTypes.OptionalNamespaces => {
   const selectedNamespaces = getNamespacesFromChains(chains)
-  console.log('selected optional namespaces:', selectedNamespaces)
+  console.debug('selected optional namespaces:', selectedNamespaces)
 
   return Object.fromEntries(
     selectedNamespaces.map((namespace) => [

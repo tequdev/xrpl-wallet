@@ -75,13 +75,13 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       throw new Error('WalletConnect is not initialized')
     }
     this.client.on('session_ping', (args) => {
-      console.log('EVENT', 'session_ping', args)
+      console.debug('EVENT', 'session_ping', args)
     })
     this.client.on('session_event', (args) => {
-      console.log('EVENT', 'session_event', args)
+      console.debug('EVENT', 'session_event', args)
     })
     this.client.on('session_update', ({ topic, params }) => {
-      console.log('EVENT', 'session_update', { topic, params })
+      console.debug('EVENT', 'session_update', { topic, params })
       const { namespaces } = params
       const _session = this.client.session.get(topic)
       const updatedSession = { ..._session, namespaces }
@@ -89,7 +89,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       this.emit(EVENTS.CONNECTED)
     })
     this.client.on('session_delete', () => {
-      console.log('EVENT', 'session_delete')
+      console.debug('EVENT', 'session_delete')
       this.reset()
       this.emit(EVENTS.DISCONNECTED)
     })
@@ -101,14 +101,14 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     }
     // populates existing pairings to state
     this.pairing = this.client.pairing.getAll({ active: true })
-    console.log('RESTORED PAIRINGS: ', this.client.pairing.getAll({ active: true }))
+    console.debug('RESTORED PAIRINGS: ', this.client.pairing.getAll({ active: true }))
 
     if (typeof this.session !== 'undefined') return
     // populates (the last) existing session to state
     if (this.client.session.length) {
       const lastKeyIndex = this.client.session.keys.length - 1
       const _session = this.client.session.get(this.client.session.keys[lastKeyIndex])
-      console.log('RESTORED SESSION:', _session)
+      console.debug('RESTORED SESSION:', _session)
       this.onSessionConnected(_session)
       return _session
     }
@@ -158,11 +158,11 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     if (typeof this.client === 'undefined') {
       throw new Error('WalletConnect is not initialized')
     }
-    console.log('connect, pairing topic is:', this.pairing[0]?.topic)
+    console.debug('connect, pairing topic is:', this.pairing[0]?.topic)
     try {
       const requiredNamespaces = getRequiredNamespaces(this.chains)
       const optionalNamespaces = getOptionalNamespaces(this.chains)
-      console.log('requiredNamespaces config for connect:', requiredNamespaces)
+      console.debug('requiredNamespaces config for connect:', requiredNamespaces)
 
       const { uri, approval } = await this.client.connect({
         pairingTopic: this.pairing[0]?.topic,
@@ -186,7 +186,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
           .catch((e) => reject(e))
         this.web3Modal.subscribeModal((state) => state.open === false && reject())
       })
-      console.log('Established session:', session)
+      console.debug('Established session:', session)
       await this.onSessionConnected(session)
       // Update known pairings after session is connected.
       this.pairing = this.client.pairing.getAll({ active: true })
