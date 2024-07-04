@@ -1,7 +1,7 @@
 import Client from '@walletconnect/sign-client'
 import { PairingTypes, SessionTypes } from '@walletconnect/types'
 import { getAppMetadata, getSdkError } from '@walletconnect/utils'
-import { Web3Modal } from '@web3modal/standalone'
+import { WalletConnectModal } from '@walletconnect/modal'
 import { WalletAdaptor, SignOption, TxJson, EVENTS } from '@xrpl-wallet/core'
 import { ChainData, devnet, mainnet, testnet } from '@xrpl-walletconnect/core'
 import { encode } from 'ripple-binary-codec'
@@ -26,7 +26,7 @@ type Props = {
 export class WalletConnectAdaptor extends WalletAdaptor {
   name = 'WalletConnect'
   private projectId: string
-  private web3Modal: Web3Modal
+  private modal: WalletConnectModal
   private client: Client
   private pairing: PairingTypes.Struct[] = []
   private session: SessionTypes.Struct | undefined
@@ -42,10 +42,9 @@ export class WalletConnectAdaptor extends WalletAdaptor {
     this.relayUrl = relayUrl
     this.metadata = metadata
     this.client = new Client()
-    this.web3Modal = new Web3Modal({
+    this.modal = new WalletConnectModal({
       projectId: this.projectId,
       themeMode: 'light',
-      walletConnectVersion: 2,
       explorerRecommendedWalletIds: [
         // Bifrost Wallet
         '37a686ab6223cd42e2886ed6e5477fce100a4fb565dcd57ed4f81f7c12e93053',
@@ -177,14 +176,14 @@ export class WalletConnectAdaptor extends WalletAdaptor {
           .map((namespace) => namespace.chains)
           .flat() as string[]
 
-        this.web3Modal.openModal({ uri, standaloneChains })
+        this.modal.openModal({ uri, standaloneChains })
       }
 
       const session = await new Promise<SessionTypes.Struct>((resolve, reject) => {
         approval()
           .then((s) => resolve(s))
           .catch((e) => reject(e))
-        this.web3Modal.subscribeModal((state) => state.open === false && reject())
+        this.modal.subscribeModal((state) => state.open === false && reject())
       })
       console.debug('Established session:', session)
       await this.onSessionConnected(session)
@@ -199,7 +198,7 @@ export class WalletConnectAdaptor extends WalletAdaptor {
       // ignore rejection
     } finally {
       // close modal in case it was open
-      this.web3Modal.closeModal()
+      this.modal.closeModal()
     }
   }
 

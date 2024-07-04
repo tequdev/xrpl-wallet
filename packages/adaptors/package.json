@@ -36,10 +36,10 @@
   "dependencies": {
     "@crossmarkio/sdk": "0.3.5-beta",
     "@crossmarkio/typings": "0.0.1-beta",
+    "@walletconnect/modal": "^2.6.2",
     "@walletconnect/sign-client": "^2.10.0",
     "@walletconnect/types": "^2.10.0",
     "@walletconnect/utils": "^2.10.0",
-    "@web3modal/standalone": "^2.4.3",
     "@xrpl-walletconnect/core": "^0.1.0",
     "ripple-binary-codec": "^1.9.0",
     "xrpl": "^2.14.0",
