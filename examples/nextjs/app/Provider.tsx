@@ -4,14 +4,9 @@ import { WalletClientContextProvider } from '@xrpl-wallet/react'
 
 type Props<T extends WalletAdaptor = WalletAdaptor> = {
   adaptors: T[]
-  metadata: { adaptor: T['name']; props?: any }[]
   children: React.ReactNode
 }
 
-export default function Provider({ adaptors, metadata, children }: Props) {
-  return (
-    <WalletClientContextProvider adaptors={adaptors} metadata={metadata}>
-      {children}
-    </WalletClientContextProvider>
-  )
+export default function Provider({ adaptors, children }: Props) {
+  return <WalletClientContextProvider adaptors={adaptors}>{children}</WalletClientContextProvider>
 }

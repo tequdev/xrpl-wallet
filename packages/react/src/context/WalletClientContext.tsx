@@ -17,7 +17,6 @@ export const walletClientContext = createContext({} as WalletClientContext)
 type ProviderProps<T extends WalletAdaptor = WalletAdaptor> = {
   children: React.ReactNode
   adaptors: T[]
-  metadata: { adaptor: T['name']; props?: any }[]
 }
 
 export const WalletClientContextProvider = ({ children, adaptors }: ProviderProps) => {

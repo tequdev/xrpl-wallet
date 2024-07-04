@@ -2,12 +2,12 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.addMissingImports": true,
-    "source.fixAll.eslint": true,
+    "source.addMissingImports": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.workingDirectories": [{ "mode": "auto" }],
-  "eslint.experimental.useFlatConfig": true,
+  "eslint.useFlatConfig": true,
   "prettier.configPath": "prettier.config.js",
 }

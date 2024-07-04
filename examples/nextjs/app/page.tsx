@@ -9,11 +9,12 @@ export default function Home() {
 
   const sendTx = async () => {
     if (!transaction) return
-    const tx = await transaction.autofill({
+    const tx = {
       TransactionType: 'Payment',
       Destination: 'rQQQrUdN1cLdNmxH4dHfKgmX5P4kf3ZrM',
+      NetworkID: 21337,
       Amount: '100',
-    })
+    }
     const result = await transaction.signAndSubmit(tx)
     alert(JSON.stringify(result, null, '  '))
   }
